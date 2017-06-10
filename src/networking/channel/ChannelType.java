@@ -6,6 +6,7 @@ public enum ChannelType {
 	PACKET,
 	BYTE,
 	INT,
-	FLOAT;
+	FLOAT,
+	NONE;
 	
 }

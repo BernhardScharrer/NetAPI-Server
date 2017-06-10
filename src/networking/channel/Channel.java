@@ -12,6 +12,8 @@ public abstract class Channel {
 	protected Connection con;
 	protected Console console;
 	
+	private Thread channel;
+	
 	/**
 	 *
 	 * represents an abstract model of a channel
@@ -21,6 +23,8 @@ public abstract class Channel {
 		
 		this.name = name;
 		this.console = console;
+		this.socket = socket;
+		this.con = con;
 		
 	}
 
@@ -28,9 +32,23 @@ public abstract class Channel {
 		return name;
 	}
 	
+	public void start() {
+		channel = new Thread(new Runnable() {
+			public void run() {
+				setup();
+			}
+		});
+		channel.start();
+	}
+	
+	public void stop() {
+		channel.interrupt();
+		close();
+	}
+	
 	protected abstract void setup();
 	protected abstract ChannelType getType();
 	
-	public abstract void close();
+	abstract void close();
 	
 }

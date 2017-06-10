@@ -17,7 +17,7 @@ public abstract class ByteChannel extends Channel {
 	public ByteChannel(String name, Socket socket, Connection con, Console console, int size) {
 		super(name, socket, con, console);
 		this.buffer = new byte[size];
-		this.setup();
+		start();
 	}
 
 	@Override

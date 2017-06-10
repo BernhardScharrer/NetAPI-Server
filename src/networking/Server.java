@@ -33,13 +33,16 @@ public class Server {
 		 */
 		if (con == null) {
 			
-			
+			con = new Connection(socket, console);
+			cons.add(con);
 			
 		}
 		/**
 		 * add channel to connection
 		 */
 		else {
+			
+			
 			
 		}
 		
@@ -49,7 +52,7 @@ public class Server {
 		return console;
 	}
 	
-	public String getIp() {
+	public String getIP() {
 		return ip;
 	}
 

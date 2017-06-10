@@ -26,12 +26,15 @@ public class ClientListener {
 					while (true) {
 						
 						new_socket = ClientListener.this.server.accept();
+						server.getConsole().info("Connect --> " + new_socket.getInetAddress().getHostAddress());
 						server.newSocket(new_socket);
 						
 					}
 					
 				} catch (IOException e) {
-					e.printStackTrace();
+					server.getConsole().error("Could not start listener...");
+					server.getConsole().error("Maybe another listener is already running at " + server.getIP() + ":" + server.getPort());
+					System.exit(-1);
 				}
 				
 			}
