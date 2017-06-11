@@ -38,7 +38,7 @@ public abstract class ByteChannel extends Channel {
 	}
 
 	@Override
-	protected ChannelType getType() {
+	public ChannelType getType() {
 		return ChannelType.BYTE;
 	}
 	

@@ -24,7 +24,7 @@ public abstract class PacketChannel extends ObjChannel {
 	protected abstract void incoming(Packet packet);
 	
 	@Override
-	protected ChannelType getType() {
+	public ChannelType getType() {
 		return ChannelType.PACKET;
 	}
 	

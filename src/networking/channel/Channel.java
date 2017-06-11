@@ -47,7 +47,7 @@ public abstract class Channel {
 	}
 	
 	protected abstract void setup();
-	protected abstract ChannelType getType();
+	public abstract ChannelType getType();
 	
 	abstract void close();
 	

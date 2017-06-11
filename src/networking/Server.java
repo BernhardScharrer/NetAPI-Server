@@ -4,19 +4,24 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import networking.channel.PacketChannel;
+import networking.channel.StringChannel;
+
 public class Server {
 	
 	private String ip;
 	private int port;
 	private Console console;
+	private StreamManager manager;
 	
 	private ClientListener listener;
 	private List<Connection> cons = new ArrayList<>();
 	
-	public Server(String ip, int port, Console console) {
+	public Server(String ip, int port, StreamManager manager, Console console) {
 		this.ip = ip;
 		this.port = port;
 		this.console = console;
+		this.manager = manager;
 		
 		this.console.info("Server started! ("+ip+":"+port+")");
 		
@@ -42,7 +47,32 @@ public class Server {
 		 */
 		else {
 			
+			console.debug("create new channel: " + con.getNextChannelName() + " (" + con.getState() + ")");
 			
+			switch (con.getState()) {
+			case BYTE:
+				break;
+			case FLOAT:
+				break;
+			case INT:
+				break;
+			case NONE:
+				break;
+			case PACKET:
+				con.addChannel(new PacketChannel(con.getNextChannelName(), socket, con, console) {
+					protected void incoming(Packet packet) {
+						manager.incomingPacket(con, this, packet);
+					}
+				});
+				break;
+			case STRING:
+				con.addChannel(new StringChannel("", socket, con, console) {
+					protected void incoming(String command) {
+						manager.incomingString(con, this, command);
+					}
+				});
+				break;
+			}
 			
 		}
 		

@@ -21,7 +21,7 @@ public abstract class StringChannel extends ObjChannel {
 	}
 	
 	@Override
-	protected ChannelType getType() {
+	public ChannelType getType() {
 		return ChannelType.STRING;
 	}
 	

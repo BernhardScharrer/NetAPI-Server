@@ -14,13 +14,18 @@ public class Connection {
 	private MainChannel main_channel;
 	private List<Channel> channels = new ArrayList<>();
 	private ChannelType type;
+	private String channel_name;
+	private Console console;
 	
 	public Connection(Socket socket, Console console) {
 		
 		console.debug("Build new connection on " + socket.getInetAddress().getHostAddress());
+		
+		this.console = console;
 		this.ip = socket.getInetAddress().getHostAddress();
 		this.main_channel = new MainChannel(socket, this, console);
 		this.type = ChannelType.NONE;
+		this.channel_name = "-";
 		
 	}
 
@@ -37,15 +42,27 @@ public class Connection {
 		return type;
 	}
 	
+	public String getNextChannelName() {
+		return channel_name;
+	}
+	
+	public void addChannel(Channel channel) {
+		this.channels.add(channel);
+	}
+	
 	public void incoming(String command) {
+		
+		console.debug("Incoming command on MAIN-Channel: " + command);		
 		String[] args = command.split(";");
 		
-		switch (command) {
+		switch (args[0]) {
 		case "disconnect":
 			close();
 			break;
 		case "channel":
 			type = ChannelType.valueOf(args[1].toUpperCase());
+			channel_name = args[2];
+			console.debug("Channeltype was set to: " + args[1].toUpperCase());
 			break;
 		}
 	}
