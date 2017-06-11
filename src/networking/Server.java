@@ -38,7 +38,7 @@ public class Server {
 		 */
 		if (con == null) {
 			
-			con = new Connection(socket, console);
+			con = new Connection(this, socket, console);
 			cons.add(con);
 			
 		}
@@ -95,9 +95,17 @@ public class Server {
 		return null;
 	}
 	
+	public void sendAll(String msg) {
+		for (Connection con : cons) con.send(msg);
+	}
+	
 	public void close() {
 		listener.stop();
 		for (Connection con : cons) con.close();
+	}
+	
+	public void disconnect(Connection con) {
+		cons.remove(con);
 	}
 	
 }
