@@ -98,7 +98,13 @@ public class Server {
 	}
 	
 	public void sendAll(String msg) {
+		console.debug("Outgoing command to all MAIN-Channels: " + msg);
 		for (Connection con : cons) con.send(msg);
+	}
+	
+	public void sendToAllOut(String msg, Connection connection) {
+		console.debug("Outgoing command to all MAIN-Channels: " + msg);
+		for (Connection con : cons) if (!con.getIP().equals(con.getIP())) con.send(msg);
 	}
 	
 	public void close() {
@@ -107,6 +113,7 @@ public class Server {
 	}
 	
 	public void disconnect(Connection con) {
+		console.info("Client disconnected. ("+con.getIP()+")");
 		cons.remove(con);
 	}
 	

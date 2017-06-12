@@ -65,14 +65,13 @@ public class Connection {
 	}
 	
 	public void send(String msg) {
-		console.debug("Incoming command on MAIN-Channel: " + msg);
+		console.debug("Outgoing command on MAIN-Channel: " + msg);
 		main_channel.send(msg);
 	}
 	
 	public void incoming(String command) {
 		
 		console.debug("Incoming command on MAIN-Channel: " + command);
-		server.sendAll("Hallo");
 		String[] args = command.split(";");
 		
 		switch (args[0]) {
