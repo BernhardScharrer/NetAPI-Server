@@ -5,6 +5,7 @@ import networking.DefaultConsole;
 import networking.Packet;
 import networking.Server;
 import networking.StreamManager;
+import networking.channel.ByteChannel;
 import networking.channel.PacketChannel;
 import networking.channel.StringChannel;
 
@@ -22,6 +23,12 @@ public class TestServer {
 			@Override
 			public void incomingPacket(Connection con, PacketChannel channel, Packet packet) {
 				System.out.println(con.getIP() + "|" + channel.getName() + " ("+channel.getType().toString().toUpperCase()+") >>> " + packet.getName());
+			}
+
+			@Override
+			public void incomingByte(Connection con, ByteChannel channel, byte[] buffer) {
+				
+				
 			}
 		}, new DefaultConsole());
 		

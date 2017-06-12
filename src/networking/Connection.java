@@ -18,6 +18,8 @@ public class Connection {
 	private ChannelType type;
 	private String channel_name;
 	private Console console;
+
+	private int buffersize;
 	
 	public Connection(Server server, Socket socket, Console console) {
 		
@@ -48,17 +50,29 @@ public class Connection {
 		return channel_name;
 	}
 	
+	public int getBufferSize() {
+		return buffersize;
+	}
+	
+	public void clearData() {
+		type = ChannelType.NONE;
+		channel_name = "-";
+		buffersize = -1;
+	}
+	
 	public void addChannel(Channel channel) {
 		this.channels.add(channel);
 	}
 	
 	public void send(String msg) {
+		console.debug("Incoming command on MAIN-Channel: " + msg);
 		main_channel.send(msg);
 	}
 	
 	public void incoming(String command) {
 		
-		console.debug("Incoming command on MAIN-Channel: " + command);		
+		console.debug("Incoming command on MAIN-Channel: " + command);
+		server.sendAll("Hallo");
 		String[] args = command.split(";");
 		
 		switch (args[0]) {
@@ -69,6 +83,7 @@ public class Connection {
 		case "channel":
 			type = ChannelType.valueOf(args[1].toUpperCase());
 			channel_name = args[2];
+			if (type == ChannelType.BYTE) buffersize = Integer.parseInt("3");
 			console.debug("Channeltype was set to: " + args[1].toUpperCase());
 			break;
 		}

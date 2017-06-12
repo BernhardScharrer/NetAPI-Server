@@ -4,6 +4,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import networking.channel.ByteChannel;
 import networking.channel.PacketChannel;
 import networking.channel.StringChannel;
 
@@ -51,10 +52,11 @@ public class Server {
 			
 			switch (con.getState()) {
 			case BYTE:
-				break;
-			case FLOAT:
-				break;
-			case INT:
+				con.addChannel(new ByteChannel(con.getNextChannelName(), socket, con, console, con.getBufferSize()) {
+					protected void incoming(byte[] buffer) {
+						manager.incomingByte(con, this, buffer);
+					}
+				});
 				break;
 			case NONE:
 				break;
