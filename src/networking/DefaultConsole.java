@@ -1,5 +1,7 @@
 package networking;
 
+import networking.utils.Console;
+
 public class DefaultConsole implements Console {
 
 	@Override

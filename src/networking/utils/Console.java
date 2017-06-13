@@ -1,5 +1,10 @@
-package networking;
+package networking.utils;
 
+/**
+ *
+ * represents a customizeable console
+ *
+ */
 public interface Console {
 	
 	public void debug(String msg);
