@@ -4,9 +4,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import networking.channels.ByteChannel;
 import networking.channels.Channel;
 import networking.channels.ChannelType;
 import networking.channels.MainChannel;
+import networking.channels.PacketChannel;
 import networking.channels.StringChannel;
 import networking.utils.Console;
 
@@ -48,8 +50,10 @@ public class Connection {
 		
 		switch (type) {
 		case BYTE:
+			channel = new ByteChannel(name, size);
 			break;
 		case PACKET:
+			channel = new PacketChannel(name);
 			break;
 		case STRING:
 			channel = new StringChannel(name);
