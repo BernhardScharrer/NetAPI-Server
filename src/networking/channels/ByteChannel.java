@@ -44,6 +44,7 @@ public class ByteChannel extends Channel {
 			out = socket.getOutputStream();
 			
 			console.debug("Succesfully set up BYTE-Channel!");
+			super.ready = true;
 			
 			while (in.read(buffer) != -1) {
 				console.debug("Incoming byte data!");

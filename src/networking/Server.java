@@ -4,6 +4,10 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import networking.channels.Channel;
+import networking.channels.Packet;
+import networking.channels.PacketChannel;
+import networking.channels.StringChannel;
 import networking.utils.Console;
 
 public class Server {
@@ -34,6 +38,10 @@ public class Server {
 	}
 	
 	/**
+	 * methods
+	 */
+	
+	/**
 	 * incoming socket from listener
 	 */
 	public void newSocket(Socket socket) {
@@ -53,19 +61,46 @@ public class Server {
 		 */
 		else {
 			
-			con.addChannel(socket);
+			/*
+			 * check if server got right connection
+			 */
+			
+			Connection right = getRightConnection();
+			if (right != null) {
+				console.debug("Corrected connection from "+con.getUUID()+" to "+right.getUUID());
+				con = right;
+				Connection.clearUUID();
+			}
+			
+			/*
+			 * returns false if connection is not prepered
+			 */
+			if (!con.addChannel(socket)) {
+				
+				/*
+				 * in this case setup second stream on same ip
+				 */
+				cons.add(new Connection(this, socket));
+				
+			}
 			
 		}
 		
 	}
-	
-	/**
-	 * methods
-	 */
+
 	public void close() {
 		
 		listener.stop();
 		
+	}
+	
+	/**
+	 * searches for the right connection if there are two connections on one ip
+	 */
+	private Connection getRightConnection() {
+		console.debug("Searching for connection correction... (UUID: "+Connection.getNextUUID()+")");
+		for (Connection con : cons) if (con.getUUID() == Connection.getNextUUID()) return con;
+		return null;
 	}
 	
 	public Connection getConnection(String ip) {
@@ -73,10 +108,70 @@ public class Server {
 		return null;
 	}
 	
+	/**
+	 * sends a string to every one who owns this channel
+	 */
+	public void sendToAll(String channel_name, String msg) {
+		for (Connection con : cons) {
+			Channel channel = con.getChannel(channel_name);
+			if (channel != null && channel instanceof StringChannel) {
+				StringChannel schannel = (StringChannel) channel;
+				schannel.send(msg);
+			}
+		}
+	}
+	
+	/**
+	 * sends a string to every one who owns this channel
+	 * except for one connection
+	 */
+	public void sendToAllOut(String channel_name, String msg, Connection who2not) {
+		for (Connection con : cons) {
+			if (con.getUUID()==who2not.getUUID()) continue;
+			Channel channel = con.getChannel(channel_name);
+			if (channel != null && channel instanceof StringChannel) {
+				StringChannel schannel = (StringChannel) channel;
+				schannel.send(msg);
+			}
+		}
+	}
+	
+	/**
+	 * sends a packet to every one who owns this channel
+	 */
+	public void sendToAll(String channel_name, Packet packet) {
+		for (Connection con : cons) {
+			Channel channel = con.getChannel(channel_name);
+			if (channel != null && channel instanceof PacketChannel) {
+				PacketChannel pchannel = (PacketChannel) channel;
+				pchannel.send(packet);
+			}
+		}
+	}
+	
+	/**
+	 * sends a string to every one who owns this channel
+	 * except for one connection
+	 */
+	public void sendToAllOut(String channel_name, Packet packet, Connection who2not) {
+		for (Connection con : cons) {
+			if (con.getUUID()==who2not.getUUID()) continue;
+			Channel channel = con.getChannel(channel_name);
+			if (channel != null && channel instanceof PacketChannel) {
+				PacketChannel pchannel = (PacketChannel) channel;
+				pchannel.send(packet);
+			}
+		}
+	}
+	
+	/**
+	 * remove connection
+	 */
 	public void disconnect(Connection con) {
 		console.info(con.getIP() + " disconnected!");
 		cons.remove(con);
 		con.close();
+		manager.disconnect(con);
 	}
 
 	/**

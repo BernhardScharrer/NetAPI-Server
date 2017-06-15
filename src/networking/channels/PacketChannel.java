@@ -7,6 +7,14 @@ public class PacketChannel extends ObjectChannel {
 	}
 
 	/**
+	 * methods
+	 */
+	
+	public void send(Packet packet) {
+		super.send(packet);
+	}
+	
+	/**
 	 * implemented methods
 	 */
 	

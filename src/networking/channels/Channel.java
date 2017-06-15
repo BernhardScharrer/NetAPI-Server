@@ -19,6 +19,7 @@ public abstract class Channel {
 	protected Socket socket;
 	protected Connection con;
 	protected Console console;
+	protected boolean ready;
 	
 	public Channel(String name) {
 		this.name = name;
@@ -74,6 +75,16 @@ public abstract class Channel {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public void waitLoading() {
+		while (!ready) {
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

@@ -23,6 +23,7 @@ public abstract class ObjectChannel extends Channel {
 	
 	void send(Object object) {
 		try {
+			console.debug("Outgoing object: " + object.toString());
 			out.writeObject(object);
 			out.flush();
 		} catch (IOException e) {
@@ -46,6 +47,7 @@ public abstract class ObjectChannel extends Channel {
 			in = new ObjectInputStream(super.socket.getInputStream());
 			
 			console.debug("Succesfully set up object stream! ("+super.getName()+")");
+			super.ready = true;
 			
 			while ((obj = in.readObject()) != null) {
 				console.debug("Incoming object: " + obj.toString());

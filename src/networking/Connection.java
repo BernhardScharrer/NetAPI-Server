@@ -11,6 +11,7 @@ import networking.channels.MainChannel;
 import networking.channels.PacketChannel;
 import networking.channels.StringChannel;
 import networking.utils.Console;
+import networking.utils.UUIDGenerator;
 
 /**
  * 
@@ -25,11 +26,17 @@ public class Connection {
 	private MainChannel main;
 	private List<Channel> channels = new ArrayList<>();
 	
-	private ChannelType type;
-	private String name;
-	private int size;
+	private ChannelType type = ChannelType.NONE;
+	private String name = "-";
+	private int size = -1;
+	
+	private int uuid;
+	
+	private static int next_uuid = -1;
 
 	public Connection(Server server, Socket socket) {
+		
+		this.uuid = UUIDGenerator.generate();
 		
 		this.server = server;
 		this.socket = socket;
@@ -37,6 +44,11 @@ public class Connection {
 		main = new MainChannel();
 		main.init(socket, this, server.getConsole());
 		main.start();
+		main.waitLoading();
+		
+		main.send("uuid;"+uuid);
+		
+		server.getStreamManager().connect(this);
 		
 	}
 	
@@ -44,7 +56,7 @@ public class Connection {
 	 * methods
 	 */
 	
-	public void addChannel(Socket socket) {
+	public boolean addChannel(Socket socket) {
 		
 		Channel channel = null;
 		
@@ -59,8 +71,8 @@ public class Connection {
 			channel = new StringChannel(name);
 			break;
 		case NONE:
-			getConsole().error("No channel data in buffers!");
-			break;
+			getConsole().warn("Trying to setup to connections on same IP!");
+			return false;
 		}
 		
 		type = ChannelType.NONE;
@@ -73,6 +85,7 @@ public class Connection {
 			channels.add(channel);
 		}
 		
+		return true;
 		
 	}
 	
@@ -92,9 +105,10 @@ public class Connection {
 		switch (args[0]) {
 		
 		case "channel":
-			type = ChannelType.valueOf(args[1]);
-			name = args[2];
-			size = type == ChannelType.BYTE ? Integer.parseInt(args[3]) : -1;
+			next_uuid = Integer.parseInt(args[1]);
+			type = ChannelType.valueOf(args[2]);
+			name = args[3];
+			size = type == ChannelType.BYTE ? Integer.parseInt(args[4]) : -1;
 		
 			sendToClient("channel;accept");
 			
@@ -114,6 +128,10 @@ public class Connection {
 	 * getters
 	 */
 	
+	public Server getServer() {
+		return server;
+	}
+	
 	public Console getConsole() {
 		return server.getConsole();
 	}
@@ -124,6 +142,23 @@ public class Connection {
 	
 	public StreamManager getStreamManager() {
 		return server.getStreamManager();
+	}
+	
+	public int getUUID() {
+		return uuid;
+	}
+	
+	public static int getNextUUID() {
+		return next_uuid;
+	}
+
+	public static void clearUUID() {
+		next_uuid = -1;
+	}
+	
+	public Channel getChannel(String channel_name) {
+		for (Channel channel : channels) if (channel.getName().equals(name)) return channel;
+		return null;
 	}
 	
 }
