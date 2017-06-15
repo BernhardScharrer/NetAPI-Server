@@ -19,7 +19,7 @@ public class MainChannel extends StringChannel {
 
 	@Override
 	protected void incoming(String msg) {
-		super.con.recieveFromServer(msg);
+		con.recieveFromClient(msg);
 	}
 
 }

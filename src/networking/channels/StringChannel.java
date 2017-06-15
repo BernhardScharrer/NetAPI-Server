@@ -4,7 +4,7 @@ package networking.channels;
  * represents a type of channel
  * which online accepts string transfer.
  */
-public abstract class StringChannel extends ObjectChannel {
+public class StringChannel extends ObjectChannel {
 
 	public StringChannel(String name) {
 		super(name);
@@ -16,6 +16,10 @@ public abstract class StringChannel extends ObjectChannel {
 	
 	public void send(String msg) {
 		super.send(msg);
+	}
+	
+	protected void incoming(String obj) {
+		con.getStreamManager().incoming(con, this, obj);
 	}
 
 	/**
@@ -32,11 +36,5 @@ public abstract class StringChannel extends ObjectChannel {
 	public ChannelType getType() {
 		return ChannelType.STRING;
 	}
-	
-	/**
-	 * abstract methods
-	 */
-	
-	protected abstract void incoming(String msg);
 	
 }

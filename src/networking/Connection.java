@@ -1,8 +1,13 @@
 package networking;
 
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
+import networking.channels.Channel;
+import networking.channels.ChannelType;
 import networking.channels.MainChannel;
+import networking.channels.StringChannel;
 import networking.utils.Console;
 
 /**
@@ -16,6 +21,11 @@ public class Connection {
 	private Socket socket;
 	
 	private MainChannel main;
+	private List<Channel> channels = new ArrayList<>();
+	
+	private ChannelType type;
+	private String name;
+	private int size;
 
 	public Connection(Server server, Socket socket) {
 		
@@ -32,24 +42,68 @@ public class Connection {
 	 * methods
 	 */
 	
-	public void addChannel() {
+	public void addChannel(Socket socket) {
+		
+		Channel channel = null;
+		
+		switch (type) {
+		case BYTE:
+			break;
+		case PACKET:
+			break;
+		case STRING:
+			channel = new StringChannel(name);
+			break;
+		case NONE:
+			getConsole().error("No channel data in buffers!");
+			break;
+		}
+		
+		type = ChannelType.NONE;
+		name = "-";
+		size = -1;
+		
+		if (channel != null) {
+			channel.init(socket, this, getConsole());
+			channel.start();
+			channels.add(channel);
+		}
+		
 		
 	}
 	
 	public void close() {
 		main.stop();
+		for (Channel channel : channels) channel.stop();
 	}
 	
 	/**
 	 * methods
 	 */
 
-	public void recieveFromServer(String msg) {
+	public void recieveFromClient(String msg) {
+		
+		String[] args = msg.split(";");
+		
+		switch (args[0]) {
+		
+		case "channel":
+			type = ChannelType.valueOf(args[1]);
+			name = args[2];
+			size = type == ChannelType.BYTE ? Integer.parseInt(args[3]) : -1;
+		
+			sendToClient("channel;accept");
+			
+		}
 		
 	}
 	
-	public void send(String msg) {
+	private void sendToClient(String msg) {
 		main.send(msg);
+	}
+
+	public void disconnect() {
+		server.disconnect(this);
 	}
 	
 	/**
@@ -63,9 +117,9 @@ public class Connection {
 	public String getIP() {
 		return socket.getInetAddress().getHostAddress();
 	}
-
-	public void disconnect() {
-		server.disconnect(this);
+	
+	public StreamManager getStreamManager() {
+		return server.getStreamManager();
 	}
 	
 }

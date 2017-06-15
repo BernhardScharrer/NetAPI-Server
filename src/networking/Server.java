@@ -10,9 +10,10 @@ public class Server {
 	
 	private String ip;
 	private int port;
+	private StreamManager manager;
 	private Console console;
-	private SocketListener listener;
 	
+	private SocketListener listener;
 	private List<Connection> cons = new ArrayList<>();
 	
 	/**
@@ -20,12 +21,13 @@ public class Server {
 	 * represents the server
 	 * 
 	 */
-	public Server(String ip, int port, Console console) {
+	public Server(String ip, int port, StreamManager manager, Console console) {
 		
 		console.info("Server is starting!");
 		
 		this.ip = ip;
 		this.port = port;
+		this.manager = manager;
 		this.console = console;
 		this.listener = new SocketListener(this, console);
 		
@@ -51,7 +53,7 @@ public class Server {
 		 */
 		else {
 			
-			// TODO
+			con.addChannel(socket);
 			
 		}
 		
@@ -63,6 +65,7 @@ public class Server {
 	public void close() {
 		
 		listener.stop();
+		
 	}
 	
 	public Connection getConnection(String ip) {
@@ -90,6 +93,10 @@ public class Server {
 
 	public Console getConsole() {
 		return console;
+	}
+	
+	public StreamManager getStreamManager() {
+		return manager;
 	}
 	
 }

@@ -48,7 +48,7 @@ public abstract class ObjectChannel extends Channel {
 			console.debug("Succesfully set up object stream! ("+super.getName()+")");
 			
 			while ((obj = in.readObject()) != null) {
-				console.error("Incoming object: " + obj.toString());
+				console.debug("Incoming object: " + obj.toString());
 				recieve(obj);
 			}
 			
