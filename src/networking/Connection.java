@@ -157,7 +157,7 @@ public class Connection {
 	}
 	
 	public Channel getChannel(String channel_name) {
-		for (Channel channel : channels) if (channel.getName().equals(name)) return channel;
+		for (Channel channel : channels) if (channel.getName().equals(channel_name)) return channel;
 		return null;
 	}
 	
