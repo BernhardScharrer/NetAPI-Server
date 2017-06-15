@@ -7,7 +7,7 @@ public class TestServer {
 	
 	public static void main(String[] args) {
 		
-		Server server = new Server("127.0.0.1", 7894, new DefaultConsole());
+		Server server = new Server("localhost", 7777, new DefaultConsole());
 		
 		System.out.println("Test");
 		

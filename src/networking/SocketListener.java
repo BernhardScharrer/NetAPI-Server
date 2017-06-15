@@ -49,9 +49,8 @@ public class SocketListener {
 						 * waits for incoming socket
 						 */
 						
-						console.debug("Incoming socket from: " + socket.getInetAddress().getHostAddress());
-						
 						new_socket = socket.accept();
+						console.debug("Incoming socket from: " + new_socket.getInetAddress().getHostAddress());
 						server.newSocket(new_socket);
 						
 					}
