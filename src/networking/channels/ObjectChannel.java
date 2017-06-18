@@ -1,5 +1,6 @@
 package networking.channels;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -43,8 +44,16 @@ public abstract class ObjectChannel extends Channel {
 		
 		try {
 			
+			console.debug("Start binding OUT-Socket...");
+			
 			out = new ObjectOutputStream(super.socket.getOutputStream());
+			
+			console.debug("Finished!");
+			console.debug("Start binding IN-Socket...");
+			
 			in = new ObjectInputStream(super.socket.getInputStream());
+			
+			console.debug("Finished!");
 			
 			console.debug("Succesfully set up object stream! ("+super.getName()+")");
 			super.ready = true;
@@ -55,7 +64,10 @@ public abstract class ObjectChannel extends Channel {
 			}
 			
 			console.debug("Succesfully set up Object-IO!");
-			
+		
+		} catch (EOFException e) {
+			console.warn("Stream broke down! (EOF|"+super.con.getIP()+")");
+			con.disconnect();
 		} catch (SocketException e) {
 			console.warn("Stream broke down! ("+super.con.getIP()+")");
 			con.disconnect();
@@ -72,8 +84,8 @@ public abstract class ObjectChannel extends Channel {
 	void closeIO() {
 		
 		try {
-			in.close();
-			out.close();
+			if (in!=null) in.close(); else console.warn("IN-Stream was already closed!");
+			if (out!=null) out.close(); else console.warn("OUT-Stream was already closed!");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
