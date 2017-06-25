@@ -120,8 +120,8 @@ public class Connection {
 		main.send(msg);
 	}
 
-	public void disconnect() {
-		server.disconnect(this);
+	public void disconnect(ErrorType error) {
+		server.disconnect(this, error);
 	}
 	
 	/**

@@ -4,7 +4,11 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OptionalDataException;
+import java.io.StreamCorruptedException;
 import java.net.SocketException;
+
+import networking.ErrorType;
 
 /**
  * represents an object channel
@@ -65,16 +69,24 @@ public abstract class ObjectChannel extends Channel {
 			
 			console.debug("Succesfully set up Object-IO!");
 		
+		} catch (OptionalDataException e) {
+			console.warn("Stream init failed! (OD|"+super.con.getIP()+")");
+			con.disconnect(ErrorType.OPTIONAL_DATA);
+		} catch (StreamCorruptedException e) {
+			console.warn("Stream init failed! (SC|"+super.con.getIP()+")");
+			con.disconnect(ErrorType.STREAM_CORRUPTED);
 		} catch (EOFException e) {
 			console.warn("Stream broke down! (EOF|"+super.con.getIP()+")");
-			con.disconnect();
+			con.disconnect(ErrorType.EOF);
 		} catch (SocketException e) {
 			console.warn("Stream broke down! ("+super.con.getIP()+")");
-			con.disconnect();
+			con.disconnect(ErrorType.NO_ERROR);
 		} catch (IOException e) {
 			console.error("IO-Excpetion occured while object was incoming.");
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
+			console.error("Unknowen class! ("+super.con.getIP()+")");
+			con.disconnect(ErrorType.NO_ERROR);
 			e.printStackTrace();
 		}
 		

@@ -167,11 +167,11 @@ public class Server {
 	/**
 	 * remove connection
 	 */
-	public void disconnect(Connection con) {
+	public void disconnect(Connection con, ErrorType error) {
 		console.info(con.getIP() + " disconnected!");
 		cons.remove(con);
 		con.close();
-		manager.disconnect(con);
+		manager.disconnect(con, error);
 	}
 
 	/**
