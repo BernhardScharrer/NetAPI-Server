@@ -99,7 +99,7 @@ public abstract class ObjectChannel extends Channel {
 			if (in!=null) in.close(); else console.warn("IN-Stream was already closed!");
 			if (out!=null) out.close(); else console.warn("OUT-Stream was already closed!");
 		} catch (IOException e) {
-			e.printStackTrace();
+			console.warn("Stream was not closed right... ("+con.getUUID()+")");
 		}
 		
 	}
