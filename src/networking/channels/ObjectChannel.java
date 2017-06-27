@@ -31,8 +31,10 @@ public abstract class ObjectChannel extends Channel {
 			console.debug("Outgoing object: " + object.toString());
 			out.writeObject(object);
 			out.flush();
+		} catch (SocketException e) {
+			console.warn("Connection closed while sending. ("+object.toString()+")");
 		} catch (IOException e) {
-			console.error("Error while trying to sned object!");
+			console.error("Error while trying to send object!");
 			e.printStackTrace();
 		}
 	}
