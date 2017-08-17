@@ -7,7 +7,7 @@ import java.net.UnknownHostException;
 
 import javax.net.ServerSocketFactory;
 
-import tcp.networking.utils.Console;
+import utils.Console;
 
 public class SocketListener {
 	

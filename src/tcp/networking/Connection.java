@@ -10,8 +10,8 @@ import tcp.networking.channels.ChannelType;
 import tcp.networking.channels.MainChannel;
 import tcp.networking.channels.PacketChannel;
 import tcp.networking.channels.StringChannel;
-import tcp.networking.utils.Console;
-import tcp.networking.utils.UUIDGenerator;
+import utils.Console;
+import utils.UUIDGenerator;
 
 /**
  * 

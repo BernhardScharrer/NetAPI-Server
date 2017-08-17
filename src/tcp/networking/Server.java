@@ -8,7 +8,7 @@ import tcp.networking.channels.Channel;
 import tcp.networking.channels.Packet;
 import tcp.networking.channels.PacketChannel;
 import tcp.networking.channels.StringChannel;
-import tcp.networking.utils.Console;
+import utils.Console;
 
 public class Server {
 	

@@ -1,4 +1,4 @@
-package tcp.networking.utils;
+package utils;
 
 /**
  *

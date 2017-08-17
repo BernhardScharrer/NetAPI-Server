@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import tcp.networking.Connection;
-import tcp.networking.utils.Console;
+import utils.Console;
 
 /**
  *
