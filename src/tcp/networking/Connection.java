@@ -1,17 +1,17 @@
-package networking;
+package tcp.networking;
 
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import networking.channels.ByteChannel;
-import networking.channels.Channel;
-import networking.channels.ChannelType;
-import networking.channels.MainChannel;
-import networking.channels.PacketChannel;
-import networking.channels.StringChannel;
-import networking.utils.Console;
-import networking.utils.UUIDGenerator;
+import tcp.networking.channels.ByteChannel;
+import tcp.networking.channels.Channel;
+import tcp.networking.channels.ChannelType;
+import tcp.networking.channels.MainChannel;
+import tcp.networking.channels.PacketChannel;
+import tcp.networking.channels.StringChannel;
+import tcp.networking.utils.Console;
+import tcp.networking.utils.UUIDGenerator;
 
 /**
  * 

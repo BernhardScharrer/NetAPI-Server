@@ -1,14 +1,14 @@
-package networking;
+package tcp.networking;
 
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import networking.channels.Channel;
-import networking.channels.Packet;
-import networking.channels.PacketChannel;
-import networking.channels.StringChannel;
-import networking.utils.Console;
+import tcp.networking.channels.Channel;
+import tcp.networking.channels.Packet;
+import tcp.networking.channels.PacketChannel;
+import tcp.networking.channels.StringChannel;
+import tcp.networking.utils.Console;
 
 public class Server {
 	

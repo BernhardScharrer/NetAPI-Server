@@ -1,4 +1,4 @@
-package networking;
+package tcp.networking;
 
 public enum ErrorType {
 	

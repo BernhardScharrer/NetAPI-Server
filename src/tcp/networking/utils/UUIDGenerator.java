@@ -1,4 +1,4 @@
-package networking.utils;
+package tcp.networking.utils;
 
 import java.util.ArrayList;
 import java.util.List;

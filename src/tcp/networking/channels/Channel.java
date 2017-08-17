@@ -1,10 +1,10 @@
-package networking.channels;
+package tcp.networking.channels;
 
 import java.io.IOException;
 import java.net.Socket;
 
-import networking.Connection;
-import networking.utils.Console;
+import tcp.networking.Connection;
+import tcp.networking.utils.Console;
 
 /**
  *

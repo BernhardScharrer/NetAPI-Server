@@ -1,4 +1,4 @@
-package networking.channels;
+package tcp.networking.channels;
 
 public enum ChannelType {
 	

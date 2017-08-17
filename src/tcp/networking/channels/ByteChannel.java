@@ -1,4 +1,4 @@
-package networking.channels;
+package tcp.networking.channels;
 
 import java.io.IOException;
 import java.io.InputStream;

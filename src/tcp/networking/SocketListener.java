@@ -1,4 +1,4 @@
-package networking;
+package tcp.networking;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -7,7 +7,7 @@ import java.net.UnknownHostException;
 
 import javax.net.ServerSocketFactory;
 
-import networking.utils.Console;
+import tcp.networking.utils.Console;
 
 public class SocketListener {
 	

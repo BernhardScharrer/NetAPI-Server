@@ -1,9 +1,9 @@
-package networking;
+package tcp.networking;
 
-import networking.channels.ByteChannel;
-import networking.channels.Packet;
-import networking.channels.PacketChannel;
-import networking.channels.StringChannel;
+import tcp.networking.channels.ByteChannel;
+import tcp.networking.channels.Packet;
+import tcp.networking.channels.PacketChannel;
+import tcp.networking.channels.StringChannel;
 
 public interface StreamManager {
 	

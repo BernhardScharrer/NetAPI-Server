@@ -1,4 +1,4 @@
-package networking.channels;
+package tcp.networking.channels;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -8,7 +8,7 @@ import java.io.OptionalDataException;
 import java.io.StreamCorruptedException;
 import java.net.SocketException;
 
-import networking.ErrorType;
+import tcp.networking.ErrorType;
 
 /**
  * represents an object channel
