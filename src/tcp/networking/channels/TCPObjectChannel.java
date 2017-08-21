@@ -8,17 +8,17 @@ import java.io.OptionalDataException;
 import java.io.StreamCorruptedException;
 import java.net.SocketException;
 
-import tcp.networking.ErrorType;
+import utils.ErrorType;
 
 /**
  * represents an object channel
  */
-public abstract class ObjectChannel extends Channel {
+public abstract class TCPObjectChannel extends TCPChannel {
 
 	private ObjectInputStream in;
 	private ObjectOutputStream out;
 	
-	public ObjectChannel(String name) {
+	public TCPObjectChannel(String name) {
 		super(name);
 	}
 	

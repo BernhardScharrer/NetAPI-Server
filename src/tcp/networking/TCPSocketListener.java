@@ -9,7 +9,7 @@ import javax.net.ServerSocketFactory;
 
 import utils.Console;
 
-public class SocketListener {
+public class TCPSocketListener {
 	
 	private Thread listener;
 	private ServerSocket socket;
@@ -22,7 +22,7 @@ public class SocketListener {
 	 * exists creates a new one
 	 * 
 	 */
-	public SocketListener(Server server, Console console) {
+	public TCPSocketListener(TCPServer server, Console console) {
 		
 		console.info("Listener is going to start now...");
 		

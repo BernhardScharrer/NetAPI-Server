@@ -1,6 +1,6 @@
 package tcp.networking.channels;
 
-public enum ChannelType {
+public enum TCPChannelType {
 	
 	STRING,
 	PACKET,

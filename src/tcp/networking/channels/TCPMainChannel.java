@@ -11,9 +11,9 @@ package tcp.networking.channels;
  * a new one to the connection.
  * 
  */
-public class MainChannel extends StringChannel {
+public class TCPMainChannel extends TCPStringChannel {
 
-	public MainChannel() {
+	public TCPMainChannel() {
 		super("MAIN");
 	}
 

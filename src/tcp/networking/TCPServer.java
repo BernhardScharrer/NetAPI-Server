@@ -4,36 +4,37 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import tcp.networking.channels.Channel;
+import tcp.networking.channels.TCPChannel;
 import tcp.networking.channels.Packet;
-import tcp.networking.channels.PacketChannel;
-import tcp.networking.channels.StringChannel;
+import tcp.networking.channels.TCPPacketChannel;
+import tcp.networking.channels.TCPStringChannel;
 import utils.Console;
+import utils.ErrorType;
 
-public class Server {
+public class TCPServer {
 	
 	private String ip;
 	private int port;
-	private StreamManager manager;
+	private TCPStreamManager manager;
 	private Console console;
 	
-	private SocketListener listener;
-	private List<Connection> cons = new ArrayList<>();
+	private TCPSocketListener listener;
+	private List<TCPConnection> cons = new ArrayList<>();
 	
 	/**
 	 * 
 	 * represents the server
 	 * 
 	 */
-	public Server(String ip, int port, StreamManager manager, Console console) {
+	public TCPServer(String ip, int port, TCPStreamManager manager, Console console) {
 		
-		console.info("Server is starting!");
+		console.info("TCPServer is starting!");
 		
 		this.ip = ip;
 		this.port = port;
 		this.manager = manager;
 		this.console = console;
-		this.listener = new SocketListener(this, console);
+		this.listener = new TCPSocketListener(this, console);
 		
 	}
 	
@@ -46,14 +47,14 @@ public class Server {
 	 */
 	public void newSocket(Socket socket) {
 		
-		Connection con = getConnection(socket.getInetAddress().getHostAddress());
+		TCPConnection con = getConnection(socket.getInetAddress().getHostAddress());
 		
 		/*
 		 * build new connection
 		 */
 		if (con==null) {
 			
-			cons.add(new Connection(this, socket));
+			cons.add(new TCPConnection(this, socket));
 			
 		}
 		/*
@@ -65,11 +66,11 @@ public class Server {
 			 * check if server got right connection
 			 */
 			
-			Connection right = getRightConnection();
+			TCPConnection right = getRightConnection();
 			if (right != null) {
 				console.debug("Corrected connection from "+con.getUUID()+" to "+right.getUUID());
 				con = right;
-				Connection.clearUUID();
+				TCPConnection.clearUUID();
 			}
 			
 			/*
@@ -80,7 +81,7 @@ public class Server {
 				/*
 				 * in this case setup second stream on same ip
 				 */
-				cons.add(new Connection(this, socket));
+				cons.add(new TCPConnection(this, socket));
 				
 			}
 			
@@ -97,14 +98,14 @@ public class Server {
 	/**
 	 * searches for the right connection if there are two connections on one ip
 	 */
-	private Connection getRightConnection() {
-		console.debug("Searching for connection correction... (UUID: "+Connection.getNextUUID()+")");
-		for (Connection con : cons) if (con.getUUID() == Connection.getNextUUID()) return con;
+	private TCPConnection getRightConnection() {
+		console.debug("Searching for connection correction... (UUID: "+TCPConnection.getNextUUID()+")");
+		for (TCPConnection con : cons) if (con.getUUID() == TCPConnection.getNextUUID()) return con;
 		return null;
 	}
 	
-	public Connection getConnection(String ip) {
-		for (Connection con : cons) if (con.getIP().equals(ip)) return con;
+	public TCPConnection getConnection(String ip) {
+		for (TCPConnection con : cons) if (con.getIP().equals(ip)) return con;
 		return null;
 	}
 	
@@ -112,10 +113,10 @@ public class Server {
 	 * sends a string to every one who owns this channel
 	 */
 	public void sendToAll(String channel_name, String msg) {
-		for (Connection con : cons) {
-			Channel channel = con.getChannel(channel_name);
-			if (channel != null && channel instanceof StringChannel) {
-				StringChannel schannel = (StringChannel) channel;
+		for (TCPConnection con : cons) {
+			TCPChannel channel = con.getChannel(channel_name);
+			if (channel != null && channel instanceof TCPStringChannel) {
+				TCPStringChannel schannel = (TCPStringChannel) channel;
 				schannel.send(msg);
 			}
 		}
@@ -125,12 +126,12 @@ public class Server {
 	 * sends a string to every one who owns this channel
 	 * except for one connection
 	 */
-	public void sendToAllOut(String channel_name, String msg, Connection who2not) {
-		for (Connection con : cons) {
+	public void sendToAllOut(String channel_name, String msg, TCPConnection who2not) {
+		for (TCPConnection con : cons) {
 			if (con.getUUID()==who2not.getUUID()) continue;
-			Channel channel = con.getChannel(channel_name);
-			if (channel != null && channel instanceof StringChannel) {
-				StringChannel schannel = (StringChannel) channel;
+			TCPChannel channel = con.getChannel(channel_name);
+			if (channel != null && channel instanceof TCPStringChannel) {
+				TCPStringChannel schannel = (TCPStringChannel) channel;
 				schannel.send(msg);
 			}
 		}
@@ -140,10 +141,10 @@ public class Server {
 	 * sends a packet to every one who owns this channel
 	 */
 	public void sendToAll(String channel_name, Packet packet) {
-		for (Connection con : cons) {
-			Channel channel = con.getChannel(channel_name);
-			if (channel != null && channel instanceof PacketChannel) {
-				PacketChannel pchannel = (PacketChannel) channel;
+		for (TCPConnection con : cons) {
+			TCPChannel channel = con.getChannel(channel_name);
+			if (channel != null && channel instanceof TCPPacketChannel) {
+				TCPPacketChannel pchannel = (TCPPacketChannel) channel;
 				pchannel.send(packet);
 			}
 		}
@@ -153,12 +154,12 @@ public class Server {
 	 * sends a string to every one who owns this channel
 	 * except for one connection
 	 */
-	public void sendToAllOut(String channel_name, Packet packet, Connection who2not) {
-		for (Connection con : cons) {
+	public void sendToAllOut(String channel_name, Packet packet, TCPConnection who2not) {
+		for (TCPConnection con : cons) {
 			if (con.getUUID()==who2not.getUUID()) continue;
-			Channel channel = con.getChannel(channel_name);
-			if (channel != null && channel instanceof PacketChannel) {
-				PacketChannel pchannel = (PacketChannel) channel;
+			TCPChannel channel = con.getChannel(channel_name);
+			if (channel != null && channel instanceof TCPPacketChannel) {
+				TCPPacketChannel pchannel = (TCPPacketChannel) channel;
 				pchannel.send(packet);
 			}
 		}
@@ -167,7 +168,7 @@ public class Server {
 	/**
 	 * remove connection
 	 */
-	public void disconnect(Connection con, ErrorType error) {
+	public void disconnect(TCPConnection con, ErrorType error) {
 		console.info(con.getIP() + " disconnected!");
 		cons.remove(con);
 		con.close();
@@ -190,7 +191,7 @@ public class Server {
 		return console;
 	}
 	
-	public StreamManager getStreamManager() {
+	public TCPStreamManager getStreamManager() {
 		return manager;
 	}
 	
