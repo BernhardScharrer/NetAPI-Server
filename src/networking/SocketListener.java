@@ -1,4 +1,4 @@
-package tcp.networking;
+package networking;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -9,7 +9,7 @@ import javax.net.ServerSocketFactory;
 
 import utils.Console;
 
-public class TCPSocketListener {
+public class SocketListener {
 	
 	private Thread listener;
 	private ServerSocket socket;
@@ -22,7 +22,7 @@ public class TCPSocketListener {
 	 * exists creates a new one
 	 * 
 	 */
-	public TCPSocketListener(TCPServer server, Console console) {
+	public SocketListener(Server server, Console console) {
 		
 		console.info("Listener is going to start now...");
 		

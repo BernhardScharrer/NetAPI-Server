@@ -1,9 +1,9 @@
-package tcp.networking.channels;
+package networking.channels;
 
 import java.io.IOException;
 import java.net.Socket;
 
-import tcp.networking.TCPConnection;
+import networking.Connection;
 import utils.Console;
 
 /**
@@ -11,21 +11,21 @@ import utils.Console;
  * represents an abstract channel on a connection
  *
  */
-public abstract class TCPChannel {
+public abstract class Channel {
 	
 	private String name;
 	private Thread channel;
 	
 	protected Socket socket;
-	protected TCPConnection con;
+	protected Connection con;
 	protected Console console;
 	protected boolean ready;
 	
-	public TCPChannel(String name) {
+	public Channel(String name) {
 		this.name = name;
 	}
 	
-	public void init(Socket socket, TCPConnection con, Console console) {
+	public void init(Socket socket, Connection con, Console console) {
 		this.socket = socket;
 		this.con = con;
 		this.console = console;
@@ -37,7 +37,7 @@ public abstract class TCPChannel {
 	
 	abstract void createIO();
 	abstract void closeIO();
-	public abstract TCPChannelType getType();
+	public abstract ChannelType getType();
 	
 	/**
 	 * starts the channel

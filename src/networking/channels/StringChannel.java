@@ -1,12 +1,12 @@
-package tcp.networking.channels;
+package networking.channels;
 
 /**
  * represents a type of channel
  * which online accepts string transfer.
  */
-public class TCPStringChannel extends TCPObjectChannel {
+public class StringChannel extends ObjectChannel {
 
-	public TCPStringChannel(String name) {
+	public StringChannel(String name) {
 		super(name);
 	}
 	
@@ -33,8 +33,8 @@ public class TCPStringChannel extends TCPObjectChannel {
 	}
 
 	@Override
-	public TCPChannelType getType() {
-		return TCPChannelType.STRING;
+	public ChannelType getType() {
+		return ChannelType.STRING;
 	}
 	
 }

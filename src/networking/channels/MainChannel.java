@@ -1,4 +1,4 @@
-package tcp.networking.channels;
+package networking.channels;
 
 /**
  * 
@@ -11,9 +11,9 @@ package tcp.networking.channels;
  * a new one to the connection.
  * 
  */
-public class TCPMainChannel extends TCPStringChannel {
+public class MainChannel extends StringChannel {
 
-	public TCPMainChannel() {
+	public MainChannel() {
 		super("MAIN");
 	}
 

@@ -1,16 +1,16 @@
-package tcp.networking;
+package networking;
 
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import tcp.networking.channels.TCPByteChannel;
-import tcp.networking.channels.TCPChannel;
-import tcp.networking.channels.TCPChannelType;
-import tcp.networking.channels.TCPMainChannel;
-import tcp.networking.channels.TCPPacketChannel;
-import tcp.networking.channels.TCPStreamManager;
-import tcp.networking.channels.TCPStringChannel;
+import networking.channels.ByteChannel;
+import networking.channels.Channel;
+import networking.channels.ChannelType;
+import networking.channels.MainChannel;
+import networking.channels.PacketChannel;
+import networking.channels.StreamManager;
+import networking.channels.StringChannel;
 import utils.Console;
 import utils.ErrorType;
 import utils.UUIDGenerator;
@@ -20,15 +20,15 @@ import utils.UUIDGenerator;
  * represents a connection to the a client
  *
  */
-public class TCPConnection {
+public class Connection {
 
-	private TCPServer server;
+	private Server server;
 	private Socket socket;
 	
-	private TCPMainChannel main;
-	private List<TCPChannel> channels = new ArrayList<>();
+	private MainChannel main;
+	private List<Channel> channels = new ArrayList<>();
 	
-	private TCPChannelType type = TCPChannelType.NONE;
+	private ChannelType type = ChannelType.NONE;
 	private String name = "-";
 	private int size = -1;
 	
@@ -36,14 +36,14 @@ public class TCPConnection {
 	
 	private static int next_uuid = -1;
 
-	public TCPConnection(TCPServer server, Socket socket) {
+	public Connection(Server server, Socket socket) {
 		
 		this.uuid = UUIDGenerator.generate();
 		
 		this.server = server;
 		this.socket = socket;
 		
-		main = new TCPMainChannel();
+		main = new MainChannel();
 		main.init(socket, this, server.getConsole());
 		main.start();
 		main.waitLoading();
@@ -60,24 +60,24 @@ public class TCPConnection {
 	
 	public boolean addChannel(Socket socket) {
 		
-		TCPChannel channel = null;
+		Channel channel = null;
 		
 		switch (type) {
 		case BYTE:
-			channel = new TCPByteChannel(name, size);
+			channel = new ByteChannel(name, size);
 			break;
 		case PACKET:
-			channel = new TCPPacketChannel(name);
+			channel = new PacketChannel(name);
 			break;
 		case STRING:
-			channel = new TCPStringChannel(name);
+			channel = new StringChannel(name);
 			break;
 		case NONE:
 			getConsole().warn("Trying to setup to connections on same IP!");
 			return false;
 		}
 		
-		type = TCPChannelType.NONE;
+		type = ChannelType.NONE;
 		name = "-";
 		size = -1;
 		
@@ -93,7 +93,7 @@ public class TCPConnection {
 	
 	public void close() {
 		main.stop();
-		for (TCPChannel channel : channels) channel.stop();
+		for (Channel channel : channels) channel.stop();
 	}
 	
 	/**
@@ -108,9 +108,9 @@ public class TCPConnection {
 		
 		case "channel":
 			next_uuid = Integer.parseInt(args[1]);
-			type = TCPChannelType.valueOf(args[2]);
+			type = ChannelType.valueOf(args[2]);
 			name = args[3];
-			size = type == TCPChannelType.BYTE ? Integer.parseInt(args[4]) : -1;
+			size = type == ChannelType.BYTE ? Integer.parseInt(args[4]) : -1;
 		
 			sendToClient("channel;accept");
 			
@@ -130,7 +130,7 @@ public class TCPConnection {
 	 * getters
 	 */
 	
-	public TCPServer getServer() {
+	public Server getServer() {
 		return server;
 	}
 	
@@ -142,7 +142,7 @@ public class TCPConnection {
 		return socket.getInetAddress().getHostAddress();
 	}
 	
-	public TCPStreamManager getStreamManager() {
+	public StreamManager getStreamManager() {
 		return server.getStreamManager();
 	}
 	
@@ -158,8 +158,8 @@ public class TCPConnection {
 		next_uuid = -1;
 	}
 	
-	public TCPChannel getChannel(String channel_name) {
-		for (TCPChannel channel : channels) if (channel.getName().equals(channel_name)) return channel;
+	public Channel getChannel(String channel_name) {
+		for (Channel channel : channels) if (channel.getName().equals(channel_name)) return channel;
 		return null;
 	}
 	
