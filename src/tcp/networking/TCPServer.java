@@ -29,7 +29,7 @@ public class TCPServer {
 	 */
 	public TCPServer(String ip, int port, TCPStreamManager manager, Console console) {
 		
-		console.info("TCPServer is starting!");
+		console.info("TCP server is starting!");
 		
 		this.ip = ip;
 		this.port = port;
@@ -75,7 +75,7 @@ public class TCPServer {
 			}
 			
 			/*
-			 * returns false if connection is not prepered
+			 * returns false if connection is not prepared
 			 */
 			if (!con.addChannel(socket)) {
 				
