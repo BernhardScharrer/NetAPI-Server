@@ -11,6 +11,8 @@ import networking.channels.MainChannel;
 import networking.channels.PacketChannel;
 import networking.channels.StreamManager;
 import networking.channels.StringChannel;
+import networking.channels.UDPReceiver;
+import networking.channels.UDPSender;
 import utils.Console;
 import utils.ErrorType;
 import utils.UUIDGenerator;
@@ -33,6 +35,9 @@ public class Connection {
 	private int size = -1;
 	
 	private int uuid;
+	
+	private UDPSender udp_sender;
+	private UDPReceiver udp_receiver;
 	
 	private static int next_uuid = -1;
 
@@ -92,6 +97,8 @@ public class Connection {
 	}
 	
 	public void close() {
+		if (udp_sender != null) udp_sender.close();
+		if (udp_receiver != null) udp_receiver.close();
 		main.stop();
 		for (Channel channel : channels) channel.stop();
 	}
@@ -161,6 +168,34 @@ public class Connection {
 	public Channel getChannel(String channel_name) {
 		for (Channel channel : channels) if (channel.getName().equals(channel_name)) return channel;
 		return null;
+	}
+	
+	/**
+	 * enable udp sender
+	 * @return 
+	 */
+	public UDPSender startUDPSender(int buffer_length) {
+		udp_sender = new UDPSender(socket.getInetAddress().getHostAddress(), socket.getPort()+2, buffer_length, server.getConsole());
+		sendToClient("udp;receive;"+(Server.udp_port++)+";"+buffer_length);
+		return udp_sender;
+	}
+	
+	/**
+	 * enable udp receiver
+	 * @return 
+	 */
+	public UDPReceiver startUDPReceiver(int buffer_length) {
+		udp_receiver = new UDPReceiver(socket.getInetAddress().getHostAddress(), socket.getPort()+1, buffer_length, server.getConsole());
+		sendToClient("udp;send;"+(Server.udp_port++)+";"+buffer_length);
+		return udp_receiver;
+	}
+	
+	public UDPReceiver getUDPReceiver() {
+		return udp_receiver;
+	}
+	
+	public UDPSender getUDPSender() {
+		return udp_sender;
 	}
 	
 }

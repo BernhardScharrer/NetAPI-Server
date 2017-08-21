@@ -22,6 +22,8 @@ public class Server {
 	private SocketListener listener;
 	private List<Connection> cons = new ArrayList<>();
 	
+	public static int udp_port;
+	
 	/**
 	 * 
 	 * represents the server
@@ -35,6 +37,7 @@ public class Server {
 		this.port = port;
 		this.manager = manager;
 		this.console = console;
+		this.udp_port = port+1;
 		this.listener = new SocketListener(this, console);
 		
 	}
