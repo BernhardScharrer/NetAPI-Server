@@ -1,7 +1,5 @@
 package udp.networking;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
@@ -11,8 +9,12 @@ public class UDPSocketListener {
 
 	private Thread listener;
 	private DatagramSocket socket;
-	private DatagramPacket packet;
 	
+	/**
+	 * listens on a udp server for new connections
+	 * 
+	 * @param server
+	 */
 	public UDPSocketListener(UDPServer server) {
 		
 		Console console = server.getConsole();
@@ -22,24 +24,30 @@ public class UDPSocketListener {
 			console.debug("UDP socket listener started!");
 			try {
 				
-				socket = new DatagramSocket(server.getPort());
-				packet = new DatagramPacket(new byte[server.getBufferLength()], server.getBufferLength());
-				
 				while (true) {
-					socket.receive(packet);
-					byte[] data = packet.getData();
+				
+					socket = new DatagramSocket(server.getPort());
+					server.newConnection(socket);
+					
 				}
 				
 			} catch (SocketException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+				server.getManager().bindFail(socket);
+			} finally {
+				server.disconnect();
 			}
 			
 		});
 		
 		listener.start();
 		
+	}
+
+	/**
+	 * stop listener
+	 */
+	public void disconnect() {
+		if (listener != null) listener.interrupt();
 	}
 	
 }

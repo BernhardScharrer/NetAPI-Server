@@ -1,10 +1,8 @@
-package tcp.networking;
+package tcp.networking.channels;
 
-import tcp.networking.channels.TCPByteChannel;
-import tcp.networking.channels.Packet;
-import tcp.networking.channels.TCPPacketChannel;
-import tcp.networking.channels.TCPStringChannel;
+import tcp.networking.TCPConnection;
 import utils.ErrorType;
+import utils.Packet;
 
 public interface TCPStreamManager {
 	

@@ -6,6 +6,7 @@ public enum ErrorType {
 	STREAM_CORRUPTED,
 	EOF,
 	UNKNOWN_CLASS,
-	NO_ERROR;
+	NO_ERROR,
+	IO;
 	
 }

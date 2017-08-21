@@ -9,6 +9,7 @@ import tcp.networking.channels.TCPChannel;
 import tcp.networking.channels.TCPChannelType;
 import tcp.networking.channels.TCPMainChannel;
 import tcp.networking.channels.TCPPacketChannel;
+import tcp.networking.channels.TCPStreamManager;
 import tcp.networking.channels.TCPStringChannel;
 import utils.Console;
 import utils.ErrorType;

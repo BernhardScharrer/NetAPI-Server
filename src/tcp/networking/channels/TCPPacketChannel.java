@@ -1,5 +1,7 @@
 package tcp.networking.channels;
 
+import utils.Packet;
+
 public class TCPPacketChannel extends TCPObjectChannel {
 
 	public TCPPacketChannel(String name) {
