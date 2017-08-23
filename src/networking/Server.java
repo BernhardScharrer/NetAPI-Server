@@ -37,8 +37,9 @@ public class Server {
 		this.port = port;
 		this.manager = manager;
 		this.console = console;
-		this.udp_port = port+1;
 		this.listener = new SocketListener(this, console);
+		
+		Server.udp_port = port+1;
 		
 	}
 	
@@ -160,7 +161,7 @@ public class Server {
 	 */
 	public void sendToAllOut(String channel_name, Packet packet, Connection who2not) {
 		for (Connection con : cons) {
-			if (con.getUUID()==who2not.getUUID()) continue;
+			if (con.getUUID() == who2not.getUUID()) continue;
 			Channel channel = con.getChannel(channel_name);
 			if (channel != null && channel instanceof PacketChannel) {
 				PacketChannel pchannel = (PacketChannel) channel;

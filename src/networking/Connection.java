@@ -99,7 +99,7 @@ public class Connection {
 	public void close() {
 		if (udp_sender != null) udp_sender.close();
 		if (udp_receiver != null) udp_receiver.close();
-		main.stop();
+		if (main != null) main.stop();
 		for (Channel channel : channels) channel.stop();
 	}
 	

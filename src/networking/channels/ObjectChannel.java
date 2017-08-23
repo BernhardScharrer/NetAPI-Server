@@ -33,9 +33,10 @@ public abstract class ObjectChannel extends Channel {
 			out.flush();
 		} catch (SocketException e) {
 			console.warn("Connection closed while sending. ("+object.toString()+")");
+			con.close();
 		} catch (IOException e) {
 			console.error("Error while trying to send object!");
-			e.printStackTrace();
+			con.close();
 		}
 	}
 	
@@ -90,6 +91,8 @@ public abstract class ObjectChannel extends Channel {
 			console.error("Unknowen class! ("+super.con.getIP()+")");
 			con.disconnect(ErrorType.NO_ERROR);
 			e.printStackTrace();
+		} finally {
+			if (con != null) con.close();
 		}
 		
 	}
