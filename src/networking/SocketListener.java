@@ -78,7 +78,7 @@ public class SocketListener {
 	public void stop() {
 		listener.interrupt();
 		try {
-			socket.close();
+			if (socket != null) socket.close();
 		} catch (IOException e) {
 			console.error("Could not stop server! (Socket cant close)");
 			e.printStackTrace();
