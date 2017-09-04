@@ -1,5 +1,6 @@
 package networking;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +102,16 @@ public class Connection {
 		if (udp_receiver != null) udp_receiver.close();
 		if (main != null) main.stop();
 		for (Channel channel : channels) channel.stop();
+		if (socket!=null) {
+			String ip = socket.getInetAddress().toString();
+			try {
+				socket.close();
+				getConsole().info("Closed Socket! ("+ip+")");
+			} catch (IOException e) {
+				getConsole().error("Could not close socket! ("+ip+")");
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	/**
