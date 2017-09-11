@@ -106,7 +106,7 @@ public class Connection {
 			String ip = socket.getInetAddress().toString();
 			try {
 				socket.close();
-				getConsole().info("Closed Socket! ("+ip+")");
+				getConsole().debug("Closed Socket! ("+ip+")");
 			} catch (IOException e) {
 				getConsole().error("Could not close socket! ("+ip+")");
 				e.printStackTrace();

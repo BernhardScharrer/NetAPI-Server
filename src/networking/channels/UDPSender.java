@@ -27,7 +27,7 @@ public class UDPSender {
 	 */
 	public UDPSender(String ip, int port, int buffer_length, Console console) {
 		
-		console.info("Started UDP sender on "+ip+":"+port);
+		console.debug("Started UDP sender on "+ip+":"+port);
 		
 		sender = new Thread(() -> {
 			

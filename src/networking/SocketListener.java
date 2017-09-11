@@ -24,7 +24,7 @@ public class SocketListener {
 	 */
 	public SocketListener(Server server, Console console) {
 		
-		console.info("Listener is going to start now...");
+		console.debug("Listener is going to start now...");
 		
 		this.console = console;
 		

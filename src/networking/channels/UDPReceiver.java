@@ -25,7 +25,7 @@ public class UDPReceiver {
 	 */
 	public UDPReceiver(String ip, int port, int buffer_length, Console console) {
 		
-		console.info("Started UDP receiver on "+ip+":"+port);
+		console.debug("Started UDP receiver on "+ip+":"+port);
 		this.buffer_length = buffer_length;
 		this.buffer = new byte[buffer_length];
 		

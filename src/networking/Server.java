@@ -31,7 +31,16 @@ public class Server {
 	 */
 	public Server(String ip, int port, StreamManager manager, Console console) {
 		
-		console.info("TCP server is starting!");
+		System.out.println("");
+		System.out.println(" ____  _____        _        _       _______  _____  ");
+		System.out.println("|_   \\|_   _|      / |_     / \\     |_   __ \\|_   _| ");
+		System.out.println("  |   \\ | |  .---.`| |-'   / _ \\      | |__) | | |   ");
+		System.out.println("  | |\\ \\| | / /__\\\\| |    / ___ \\     |  ___/  | |   ");
+		System.out.println(" _| |_\\   |_| \\__.,| |, _/ /   \\ \\_  _| |_    _| |_  ");
+		System.out.println("|_____|\\____|'.__.'\\__/|____| |____||_____|  |_____| ");
+		System.out.println("");
+		System.out.println("Written by Bernhard Scharrer");
+		System.out.println("");
 		
 		this.ip = ip;
 		this.port = port;
@@ -174,7 +183,7 @@ public class Server {
 	 * remove connection
 	 */
 	public void disconnect(Connection con, ErrorType error) {
-		console.info(con.getIP() + " disconnected!");
+		console.debug(con.getIP() + " disconnected!");
 		cons.remove(con);
 		con.close();
 		manager.disconnect(con, error);
