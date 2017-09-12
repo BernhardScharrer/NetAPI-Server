@@ -78,6 +78,7 @@ public abstract class ObjectChannel extends Channel {
 		} catch (StreamCorruptedException e) {
 			console.warn("Stream init failed! (SC|"+super.con.getIP()+")");
 			con.disconnect(ErrorType.STREAM_CORRUPTED);
+			super.con.getServer().reconnect();
 		} catch (EOFException e) {
 			console.warn("Stream broke down! (EOF|"+super.con.getIP()+")");
 			con.disconnect(ErrorType.EOF);

@@ -189,6 +189,14 @@ public class Server {
 		manager.disconnect(con, error);
 	}
 
+	public void reconnect() {
+		
+		listener.stop();
+		listener = new SocketListener(this, console);
+		console.info("Restarted socket listener!");
+		
+	}
+	
 	/**
 	 * getters
 	 */
