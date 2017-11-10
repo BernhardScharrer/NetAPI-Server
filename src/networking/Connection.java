@@ -36,6 +36,7 @@ public class Connection {
 	private int size = -1;
 	
 	private int uuid;
+	private boolean online;
 	
 	private UDPSender udp_sender;
 	private UDPReceiver udp_receiver;
@@ -55,6 +56,8 @@ public class Connection {
 		main.waitLoading();
 		
 		main.send("uuid;"+uuid);
+		
+		online = true;
 		
 		server.getStreamManager().connect(this);
 		
@@ -140,8 +143,11 @@ public class Connection {
 		main.send(msg);
 	}
 
-	public void disconnect(ErrorType error) {
-		server.disconnect(this, error);
+	public synchronized void disconnect(ErrorType error) {
+		if (online) {
+			online = false;
+			server.disconnect(this, error);
+		}
 	}
 	
 	/**

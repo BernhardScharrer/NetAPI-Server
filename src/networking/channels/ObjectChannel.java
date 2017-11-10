@@ -83,7 +83,7 @@ public abstract class ObjectChannel extends Channel {
 			console.warn("Stream broke down! (EOF|"+super.con.getIP()+")");
 			con.disconnect(ErrorType.EOF);
 		} catch (SocketException e) {
-			console.warn("Stream broke down! ("+super.con.getIP()+")");
+			console.debug("Stream broke down! ("+super.con.getIP()+")");
 			con.disconnect(ErrorType.NO_ERROR);
 		} catch (IOException e) {
 			console.error("IO-Excpetion occured while object was incoming.");
