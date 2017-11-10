@@ -14,6 +14,7 @@ public class SocketListener {
 	private Thread listener;
 	private ServerSocket socket;
 	private Console console;
+	private boolean closed;
 	
 	/**
 	 * 
@@ -59,8 +60,10 @@ public class SocketListener {
 					console.error("Unknown host!");
 					e.printStackTrace();
 				} catch (IOException e) {
-					console.error("Could not create listener on: " + server.getIP() + ":" + server.getPort());
-					e.printStackTrace();
+					if (!closed) {
+						console.error("Could not create listener on: " + server.getIP() + ":" + server.getPort());
+						e.printStackTrace();
+					}
 				}
 				
 				
@@ -76,6 +79,7 @@ public class SocketListener {
 	 * stops the listener
 	 */
 	public void stop() {
+		closed = true;
 		listener.interrupt();
 		try {
 			if (socket != null) socket.close();
