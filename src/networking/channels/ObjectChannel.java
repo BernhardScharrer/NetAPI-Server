@@ -80,7 +80,7 @@ public abstract class ObjectChannel extends Channel {
 			con.disconnect(ErrorType.STREAM_CORRUPTED);
 			super.con.getServer().reconnect();
 		} catch (EOFException e) {
-			console.warn("Stream broke down! (EOF|"+super.con.getIP()+")");
+			console.debug("Stream broke down! (EOF|"+super.con.getIP()+")");
 			con.disconnect(ErrorType.EOF);
 		} catch (SocketException e) {
 			console.debug("Stream broke down! ("+super.con.getIP()+")");
