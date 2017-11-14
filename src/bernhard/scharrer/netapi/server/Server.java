@@ -85,7 +85,7 @@ public class Server {
 	 * @param new_socket
 	 */
 	private void newSocket(Socket socket) {
-		clients.add(new Client(traffic, socket));
+		clients.add(new Client(traffic, socket, console));
 	}
 
 	/**
