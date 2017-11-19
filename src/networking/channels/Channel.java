@@ -82,7 +82,7 @@ public abstract class Channel {
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				console.debug("Interrupted while waiting.");
 			}
 		}
 	}
