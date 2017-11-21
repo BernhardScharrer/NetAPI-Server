@@ -14,6 +14,11 @@ public class NetAPI {
 		server = new Server(ip, port, traffic, new LinuxConsole(debug));
 	}
 	
+	public static void start(boolean headline, Console console, String ip, int port, TrafficManager traffic) {
+		if (headline) printHeadline();
+		server = new Server(ip, port, traffic, console);
+	}
+	
 	public void stop() {
 		server.cleanUp();
 	}

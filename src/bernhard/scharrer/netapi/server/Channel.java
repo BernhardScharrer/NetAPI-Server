@@ -5,6 +5,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import bernhard.scharrer.netapi.packet.Message;
+import bernhard.scharrer.netapi.packet.Packet;
+
 class Channel {
 
 	private Client client;
@@ -90,15 +93,18 @@ class Channel {
 						} else {
 							console.debug("Incoming packet: "+packet.getName());
 							manager.packet(client, packet);
+							packet = null;
 						}
 					} else {
-						console.error("Strange packet! (Object: "+obj.toString()+")");
+						console.warn("Strange packet! (Object: "+obj.toString()+")");
 					}
 				} catch (ClassNotFoundException e) {
-					console.error("Unknown class! (Class: "+e.getClass().getName()+")");
+					console.warn("Unknown class! (Class: "+e.getClass().getName()+")");
 					continue;
 				} catch (IOException e) {
-					cleanUp();
+					console.error("Could not create listener on: "+client.getIP());
+					client.cleanUp();
+					break;
 				}
 			}
 			

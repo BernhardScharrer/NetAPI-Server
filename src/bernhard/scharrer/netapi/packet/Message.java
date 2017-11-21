@@ -1,10 +1,10 @@
-package bernhard.scharrer.netapi.server;
+package bernhard.scharrer.netapi.packet;
 
-class Message extends Packet {
+public class Message extends Packet {
 
 	private static final long serialVersionUID = -6212716518373468437L;
 
-	Message(String msg) {
+	public Message(String msg) {
 		super("MESSAGE");
 		super.addEntry("MSG", msg);
 	}

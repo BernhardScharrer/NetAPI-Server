@@ -53,7 +53,6 @@ public class Server {
 			if (console.isDebugging()) console.debug("Succesfully set up socket listener!");
 			
 			while (true) {
-				
 				/**
 				 * waits for incoming socket
 				 */
@@ -62,9 +61,9 @@ public class Server {
 					new_socket = socket.accept();
 					if (console.isDebugging()) console.debug("Incoming socket from: " + new_socket.getInetAddress().getHostAddress());
 					newSocket(new_socket);
+					new_socket = null;
 				} catch (IOException e){
-					console.error("IO occuered!");
-					e.printStackTrace();
+					console.error("Socket listener broke down!");
 					continue;
 				}
 				
@@ -91,7 +90,6 @@ public class Server {
 	 * clean up everything
 	 */
 	void cleanUp() {
-		
 		/*
 		 * destry socket listener
 		 */
@@ -110,6 +108,7 @@ public class Server {
 			for (Client client : clients) {
 				client.cleanUp();
 			}
+			clients.clear();
 		}
 		
 		/*
