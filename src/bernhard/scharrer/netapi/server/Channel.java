@@ -103,7 +103,7 @@ class Channel {
 					console.warn("Unknown class! (Class: "+e.getClass().getName()+")");
 					continue;
 				} catch (IOException e) {
-					console.error("Stream broke down. " + client.getIP());
+					console.debug("Stream broke down. " + client.getIP());
 					client.cleanUp();
 					break;
 				}
