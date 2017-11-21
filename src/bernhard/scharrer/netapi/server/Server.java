@@ -72,7 +72,6 @@ public class Server {
 			
 		} catch (UnknownHostException e) {
 			console.error("Unknown host!");
-			e.printStackTrace();
 		} catch (IOException e1) {
 			console.error("Could not setup socket listener!");
 		} finally {

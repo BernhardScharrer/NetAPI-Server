@@ -1,22 +1,24 @@
-package bernhard.scharrer.netapi;
-
-import bernhard.scharrer.netapi.server.Console;
+package bernhard.scharrer.netapi.server;
 
 public class NetAPI {
 	
-	public NetAPI() {
+	private static Server server;
+	
+	public static void start(String ip, int port, TrafficManager traffic) {
 		printHeadline();
+		server = new Server(ip, port, traffic, new LinuxConsole(false));
 	}
 	
-	public NetAPI(boolean headline, boolean debug, Console console) {
+	public static void start(boolean headline, boolean debug, String ip, int port, TrafficManager traffic) {
 		if (headline) printHeadline();
+		server = new Server(ip, port, traffic, new LinuxConsole(debug));
 	}
 	
 	public void stop() {
-		
+		server.cleanUp();
 	}
 	
-	private void printHeadline() {
+	private static void printHeadline() {
 		System.out.println("\n ____  _____        _        _       _______  _____  ");
 		System.out.println("|_   \\|_   _|      / |_     / \\     |_   __ \\|_   _| ");
 		System.out.println("  |   \\ | |  .---.`| |-'   / _ \\      | |__) | | |   ");

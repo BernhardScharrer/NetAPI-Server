@@ -19,4 +19,12 @@ public class Client {
 		console.debug("Cleaning up client.");
 	}
 	
+	public void send(String message) {
+		channel.send(message);
+	}
+	
+	public void send(Packet packet) {
+		channel.send(packet);
+	}
+	
 }
