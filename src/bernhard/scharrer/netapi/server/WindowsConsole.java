@@ -7,22 +7,22 @@ public class WindowsConsole extends Console {
 	}
 
 	@Override
-	protected void debug(String debug) {
+	public void debug(String debug) {
 		System.out.println("[DEBUG] "+debug);
 	}
 
 	@Override
-	protected void info(String info) {
+	public void info(String info) {
 		System.out.println("[INFO] "+info);
 	}
 
 	@Override
-	protected void warn(String warn) {
+	public void warn(String warn) {
 		System.out.println("[WARN] "+warn);
 	}
 
 	@Override
-	protected void error(String error) {
+	public void error(String error) {
 		System.err.println("[ERROR] "+error);
 	}
 	

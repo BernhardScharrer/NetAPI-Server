@@ -28,11 +28,12 @@ class Channel {
 		try {
 			in = new ObjectInputStream(socket.getInputStream());
 			out = new ObjectOutputStream(socket.getOutputStream());
+			
+			startReceiver();
+			
 		} catch (IOException e) {
-			e.printStackTrace();
+			console.warn("Could not bind streams to: "+client.getIP());
 		}
-		
-		startReceiver();
 		
 	}
 	
@@ -43,7 +44,7 @@ class Channel {
 		new Thread(()-> {
 			
 			try {
-				out.writeObject(message);
+				out.writeObject(new Message(message));
 				out.flush();
 			} catch (IOException e) {
 				console.error("Could not send message!");
@@ -102,7 +103,7 @@ class Channel {
 					console.warn("Unknown class! (Class: "+e.getClass().getName()+")");
 					continue;
 				} catch (IOException e) {
-					console.error("Could not create listener on: "+client.getIP());
+					console.error("Stream broke down. " + client.getIP());
 					client.cleanUp();
 					break;
 				}

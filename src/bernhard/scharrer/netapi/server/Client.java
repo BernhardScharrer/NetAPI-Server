@@ -9,16 +9,21 @@ public class Client {
 	private Channel channel;
 	private Console console;
 	private String ip;
+	private TrafficManager manager;
 	
 	Client(TrafficManager manager, Socket socket, Console console) {
 		
+		this.manager = manager;
 		this.ip = socket.getInetAddress().getHostAddress();
 		this.channel = new Channel(this, manager, socket, console);
 		this.console = console;
 		
+		manager.connect(this);
+		
 	}
 	
 	void cleanUp() {
+		manager.disconnect(this);
 		console.debug("Cleaning up client.");
 		channel.cleanUp();
 	}

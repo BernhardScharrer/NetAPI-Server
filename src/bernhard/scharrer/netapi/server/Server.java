@@ -12,7 +12,6 @@ import javax.net.ServerSocketFactory;
 public class Server {
 	
 	private Thread server;
-	private String ip;
 	private int port;
 	private TrafficManager traffic;
 	private Console console;
@@ -22,7 +21,6 @@ public class Server {
 
 	public Server(String ip, int port, TrafficManager traffic, Console console) {
 		
-		this.ip = ip;
 		this.port = port;
 		this.traffic = traffic;
 		this.console = console;

@@ -16,28 +16,28 @@ public abstract class Console {
 	 * 
 	 * @param debug
 	 */
-	protected abstract void debug(String debug);
+	public abstract void debug(String debug);
 	
 	/**
 	 * print info message to console or somewhere else.
 	 * 
 	 * @param info
 	 */
-	protected abstract void info(String info);
+	public abstract void info(String info);
 	
 	/**
 	 * print warn message to console or somewhere else.
 	 * 
 	 * @param warn
 	 */
-	protected abstract void warn(String warn);
+	public abstract void warn(String warn);
 	
 	/**
 	 * print error message to console or somewhere else.
 	 * 
 	 * @param error
 	 */
-	protected abstract void error(String error);
+	public abstract void error(String error);
 	
 	/**
 	 * @return returns if console is debugging
