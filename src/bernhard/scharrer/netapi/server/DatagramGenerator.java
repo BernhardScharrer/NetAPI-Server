@@ -17,6 +17,7 @@ public class DatagramGenerator {
 	private static int length;
 	
 	private static DatagramSocket socket;
+	private static DatagramPacket receiving_packet;
 	private static DatagramPacket packet;
 	private static boolean started = false;
 	
@@ -26,6 +27,7 @@ public class DatagramGenerator {
 		
 		try {
 			socket = new DatagramSocket(port, Inet4Address.getByName(ip));
+			receiving_packet = new DatagramPacket(buf, length);
 			started = true;
 		} catch (SocketException e) {
 			// TODO
@@ -38,15 +40,22 @@ public class DatagramGenerator {
 	private static void startListener() {
 		new Thread(()-> {
 			
-			socket.receive(packet);
+			try {
+				while (true) {
+					socket.receive(packet);
+					
+				}
+			} catch (IOException e) {
+				// TODO
+			}
 			
 		});
 	}
 	
 	static void send(int[] buffer) {
 		if (started) {
-			if (DatagramGenerator.length==buffer.length) {
-				packet = new DatagramPacket(generateIntPacket(buffer), DatagramGenerator.length, socket.getRemoteSocketAddress());
+			if (length==buffer.length) {
+				packet = new DatagramPacket(generateIntPacket(buffer), length+1, socket.getRemoteSocketAddress());
 				try {
 					socket.send(packet);
 				} catch (IOException e) {
