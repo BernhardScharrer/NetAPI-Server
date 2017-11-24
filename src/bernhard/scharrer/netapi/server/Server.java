@@ -18,12 +18,15 @@ public class Server {
 	
 	private ServerSocket socket;
 	private List<Client> clients;
+	
+	private int buffer_length;
 
-	public Server(String ip, int port, TrafficManager traffic, Console console) {
+	public Server(String ip, int port, int buffer_length, TrafficManager traffic, Console console) {
 		
 		this.port = port;
 		this.traffic = traffic;
 		this.console = console;
+		this.buffer_length = buffer_length;
 		this.clients = new ArrayList<>();
 		
 		server = new Thread(()->{
@@ -81,7 +84,7 @@ public class Server {
 	 * @param new_socket
 	 */
 	private void newSocket(Socket socket) {
-		clients.add(new Client(traffic, socket, console));
+		clients.add(new Client(traffic, socket, console, buffer_length));
 	}
 
 	/**

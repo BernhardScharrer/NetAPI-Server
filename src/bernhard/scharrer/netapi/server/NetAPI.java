@@ -2,21 +2,69 @@ package bernhard.scharrer.netapi.server;
 
 public class NetAPI {
 	
+	private static final int NO_UDP = -1;
 	private static Server server;
 	
+	/**
+	 * <p>
+	 * Simple way to create a server. In this mode only String and Packets
+	 * can be transfered (only TCP). The console output will be in linux style.
+	 * <p>
+	 * @param ip to bind socket listener to
+	 * @param port to bind to
+	 * @param traffic manager for incoming stuff
+	 */
 	public static void start(String ip, int port, TrafficManager traffic) {
-		printHeadline();
-		server = new Server(ip, port, traffic, new LinuxConsole(false));
+		start(true, new LinuxConsole(false), ip, port, NO_UDP, traffic);
 	}
-	
-	public static void start(boolean headline, boolean debug, String ip, int port, TrafficManager traffic) {
-		if (headline) printHeadline();
-		server = new Server(ip, port, traffic, new LinuxConsole(debug));
-	}
-	
+	/**
+	 * <p>
+	 * In this mode only String and Packets can be transfered (only TCP).
+	 * You can create your own console output in this mode.
+	 * <p>
+	 * You also can disable the headline to be printed and
+	 * you are allowed to enable debug messages.
+	 * <p>
+	 * @param headline should be printed?
+	 * @param console which should be used
+	 * @param ip to bind socket listener to
+	 * @param port to bind to
+	 * @param traffic manager for incoming stuff
+	 */
 	public static void start(boolean headline, Console console, String ip, int port, TrafficManager traffic) {
+		start(headline, console, ip, port, NO_UDP, traffic);
+	}
+	
+	/**
+	 * <p>
+	 * In this mode you can transfer Strings, Packets, int[]s and float[]s.
+	 * The console output will be in linux style.
+	 * <p>
+	 * @param ip to bind socket listener to
+	 * @param port to bind to
+	 * @param buffer_length represents the size of the arrays that can be transfered via datagrams
+	 * @param traffic manager for incoming stuff
+	 */
+	public static void start(String ip, int port, int buffer_length, TrafficManager traffic) {
+		start(true, new LinuxConsole(false), ip, port, buffer_length, traffic);
+	}
+	
+	/**
+	 * <p>
+	 * In this mode you can transfer Strings, Packets, int[]s and float[]s.
+	 * You can create your own console output in this mode.
+	 * <p>
+	 * You also can disable the headline to be printed and
+	 * you are allowed to enable debug messages.
+	 * <p>
+	 * @param ip to bind socket listener to
+	 * @param port to bind to
+	 * @param buffer_length represents the size of the arrays that can be transfered via datagrams
+	 * @param traffic manager for incoming stuff
+	 */
+	public static void start(boolean headline, Console console, String ip, int port, int buffer_length, TrafficManager traffic) {
 		if (headline) printHeadline();
-		server = new Server(ip, port, traffic, console);
+		server = new Server(ip, port, buffer_length, traffic, console);
 	}
 	
 	public void stop() {

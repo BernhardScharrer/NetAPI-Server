@@ -89,11 +89,11 @@ class Channel {
 						if (packet instanceof Message) {
 							msg = (String) packet.getEntry("MSG");
 							console.debug("Incoming message: "+msg);
-							manager.message(client, msg);
+							manager.receive(client, msg);
 							msg = null;
 						} else {
 							console.debug("Incoming packet: "+packet.getName());
-							manager.packet(client, packet);
+							manager.receive(client, packet);
 							packet = null;
 						}
 					} else {
