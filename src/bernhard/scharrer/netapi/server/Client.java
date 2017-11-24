@@ -10,6 +10,8 @@ public class Client {
 	private Console console;
 	private String ip;
 	private TrafficManager manager;
+	private int uuid;
+	private static int count_uuid = 0;
 	
 	Client(TrafficManager manager, Socket socket, Console console) {
 		
@@ -17,6 +19,7 @@ public class Client {
 		this.ip = socket.getInetAddress().getHostAddress();
 		this.channel = new Channel(this, manager, socket, console);
 		this.console = console;
+		this.uuid = count_uuid++;
 		
 		manager.connect(this);
 		
@@ -38,6 +41,10 @@ public class Client {
 
 	public String getIP() {
 		return ip;
+	}
+	
+	public int getUUID() {
+		return uuid;
 	}
 	
 }
