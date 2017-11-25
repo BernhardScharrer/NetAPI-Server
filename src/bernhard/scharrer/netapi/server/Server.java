@@ -31,10 +31,11 @@ public class Server {
 		this.buffer_length = buffer_length;
 		this.clients = new ArrayList<>();
 		
-		server = new Thread(()->{
-			
-			startListener();
-			
+		server = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				startListener();
+			}
 		});
 		
 		server.start();

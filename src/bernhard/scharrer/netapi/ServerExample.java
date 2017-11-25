@@ -11,7 +11,7 @@ public class ServerExample {
 	
 	public static void main(String[] args) {
 		
-		Console console = new WindowsConsole(false);
+		final Console console = new WindowsConsole(false);
 		
 		NetAPI.start(true, new WindowsConsole(true), "localhost", 7777, 50, new TrafficManager() {
 			

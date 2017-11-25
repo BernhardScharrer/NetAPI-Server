@@ -40,15 +40,17 @@ class Channel {
 	/**
 	 * @param send message to client
 	 */
-	void send(String message) {
-		new Thread(()-> {
-			
-			try {
-				out.writeObject(new Message(message));
-				out.flush();
-			} catch (IOException e) {
-				console.error("Could not send message!");
-				cleanUp();
+	void send(final String message) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					out.writeObject(new Message(message));
+					out.flush();
+				} catch (IOException e) {
+					console.error("Could not send message!");
+					cleanUp();
+				}
 			}
 			
 		}).start();
@@ -57,17 +59,18 @@ class Channel {
 	/**
 	 * @param send packet to client
 	 */
-	void send(Packet packet) {
-		new Thread(()-> {
-			
-			try {
-				out.writeObject(packet);
-				out.flush();
-			} catch (IOException e) {
-				console.error("Could not send message!");
-				cleanUp();
+	void send(final Packet packet) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					out.writeObject(packet);
+					out.flush();
+				} catch (IOException e) {
+					console.error("Could not send message!");
+					cleanUp();
+				}
 			}
-			
 		}).start();
 	}
 	
@@ -75,37 +78,40 @@ class Channel {
 	 * start receiving packets from clients
 	 */
 	private void startReceiver() {
-		receiver = new Thread(()-> {
-			
-			Object obj;
-			Packet packet;
-			String msg;
-			
-			while (true) {
-				try {
-					obj = in.readObject();
-					if (obj instanceof Packet) {
-						packet = (Packet) obj;
-						if (packet instanceof Message) {
-							msg = (String) packet.getEntry("MSG");
-							console.debug("Incoming message: "+msg);
-							manager.receive(client, msg);
-							msg = null;
+		receiver = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				Object obj;
+				Packet packet;
+				String msg;
+				
+				while (true) {
+					try {
+						obj = in.readObject();
+						if (obj instanceof Packet) {
+							packet = (Packet) obj;
+							if (packet instanceof Message) {
+								msg = (String) packet.getEntry("MSG");
+								console.debug("Incoming message: "+msg);
+								manager.receive(client, msg);
+								msg = null;
+							} else {
+								console.debug("Incoming packet: "+packet.getName());
+								manager.receive(client, packet);
+								packet = null;
+							}
 						} else {
-							console.debug("Incoming packet: "+packet.getName());
-							manager.receive(client, packet);
-							packet = null;
+							console.warn("Strange packet! (Object: "+obj.toString()+")");
 						}
-					} else {
-						console.warn("Strange packet! (Object: "+obj.toString()+")");
+					} catch (ClassNotFoundException e) {
+						console.warn("Unknown class! (Class: "+e.getClass().getName()+")");
+						continue;
+					} catch (IOException e) {
+						console.debug("Stream broke down. " + client.getIP());
+						client.cleanUp();
+						break;
 					}
-				} catch (ClassNotFoundException e) {
-					console.warn("Unknown class! (Class: "+e.getClass().getName()+")");
-					continue;
-				} catch (IOException e) {
-					console.debug("Stream broke down. " + client.getIP());
-					client.cleanUp();
-					break;
 				}
 			}
 			

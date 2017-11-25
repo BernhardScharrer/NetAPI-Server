@@ -50,19 +50,20 @@ public class DatagramHandler {
 	}
 	
 	private void startListener() {
-		listener = new Thread(()-> {
-			
-			try {
-				while (true) {
-					socket.receive(send_packet);
-					receive_buffer = receiving_packet.getData();
-					receive();
-				}
-			} catch (IOException e) {
-				console.warn("Stream broke down!");
-				cleanUp();
+		listener = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					while (true) {
+						socket.receive(send_packet);
+						receive_buffer = receiving_packet.getData();
+						receive();
+					}
+				} catch (IOException e) {
+					console.warn("Stream broke down!");
+					cleanUp();
+				}				
 			}
-			
 		});
 		
 		listener.start();
