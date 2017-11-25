@@ -21,7 +21,7 @@ public class LinuxConsole extends Console {
 	
 	@Override
 	public void debug(String debug) {
-		System.out.println(DEBUG+debug);
+		if (super.isDebugging()) System.out.println(DEBUG+debug);
 	}
 
 	@Override

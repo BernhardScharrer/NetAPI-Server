@@ -14,8 +14,8 @@ public class NetAPI {
 	 * @param port to bind to
 	 * @param traffic manager for incoming stuff
 	 */
-	public static void start(String ip, int port, TrafficManager traffic) {
-		start(true, new LinuxConsole(false), ip, port, NO_UDP, traffic);
+	public static Server start(String ip, int port, TrafficManager traffic) {
+		return start(true, new LinuxConsole(false), ip, port, NO_UDP, traffic);
 	}
 	/**
 	 * <p>
@@ -31,8 +31,8 @@ public class NetAPI {
 	 * @param port to bind to
 	 * @param traffic manager for incoming stuff
 	 */
-	public static void start(boolean headline, Console console, String ip, int port, TrafficManager traffic) {
-		start(headline, console, ip, port, NO_UDP, traffic);
+	public static Server start(boolean headline, Console console, String ip, int port, TrafficManager traffic) {
+		return start(headline, console, ip, port, NO_UDP, traffic);
 	}
 	
 	/**
@@ -45,8 +45,8 @@ public class NetAPI {
 	 * @param buffer_length represents the size of the arrays that can be transfered via datagrams
 	 * @param traffic manager for incoming stuff
 	 */
-	public static void start(String ip, int port, int buffer_length, TrafficManager traffic) {
-		start(true, new LinuxConsole(false), ip, port, buffer_length, traffic);
+	public static Server start(String ip, int port, int buffer_length, TrafficManager traffic) {
+		return start(true, new LinuxConsole(false), ip, port, buffer_length, traffic);
 	}
 	
 	/**
@@ -62,12 +62,18 @@ public class NetAPI {
 	 * @param buffer_length represents the size of the arrays that can be transfered via datagrams
 	 * @param traffic manager for incoming stuff
 	 */
-	public static void start(boolean headline, Console console, String ip, int port, int buffer_length, TrafficManager traffic) {
+	public static Server start(boolean headline, Console console, String ip, int port, int buffer_length, TrafficManager traffic) {
 		if (headline) printHeadline();
-		server = new Server(ip, port, buffer_length, traffic, console);
+		return server = new Server(ip, port, buffer_length, traffic, console);
 	}
 	
-	public void stop() {
+	/**
+	 * <p>
+	 * Closes all open connection and stops
+	 * the socket listener.
+	 * <p>
+	 */
+	public static void stop() {
 		server.cleanUp();
 	}
 	

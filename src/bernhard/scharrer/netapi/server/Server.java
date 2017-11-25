@@ -12,6 +12,7 @@ import javax.net.ServerSocketFactory;
 public class Server {
 	
 	private Thread server;
+	private String ip;
 	private int port;
 	private TrafficManager traffic;
 	private Console console;
@@ -23,6 +24,7 @@ public class Server {
 
 	public Server(String ip, int port, int buffer_length, TrafficManager traffic, Console console) {
 		
+		this.ip = ip;
 		this.port = port;
 		this.traffic = traffic;
 		this.console = console;
@@ -65,7 +67,8 @@ public class Server {
 					new_socket = null;
 				} catch (IOException e){
 					console.error("Socket listener broke down!");
-					continue;
+					cleanUp();
+					break;
 				}
 				
 			}
@@ -120,5 +123,24 @@ public class Server {
 		}
 		
 	}
+	
+	public String getIP() {
+		return ip;
+	}
+
+
+	public int getPort() {
+		return port;
+	}
+
+	public Console getConsole() {
+		return console;
+	}
+
+	public int getBufferLength() {
+		return buffer_length;
+	}
+	
+	
 	
 }
