@@ -92,8 +92,8 @@ public class DatagramHandler {
 	void send(int[] buffer) {
 		if (started) {
 			if (length==buffer.length) {
-				send_packet = new DatagramPacket(generateIntPacket(buffer), BYTE_SIZE*length+1, socket.getRemoteSocketAddress());
 				try {
+					send_packet = new DatagramPacket(generateIntPacket(buffer), BYTE_SIZE*length+1, socket.getRemoteSocketAddress());
 					socket.send(send_packet);
 				} catch (IOException e) {
 					console.warn("Stream broke down!");
