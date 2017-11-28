@@ -34,6 +34,7 @@ public class Client {
 		manager.disconnect(this);
 		console.debug("Cleaning up client.");
 		channel.cleanUp();
+		datagrams.cleanUp();
 	}
 	
 	public void send(String message) {

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
@@ -13,6 +14,7 @@ public class DatagramHandler {
 	private final int FLOAT_PACKET = 1;
 	private final int BYTE_SIZE = 4;
 	
+	private int port;
 	private int length;
 	private byte[] receive_buffer;
 	
@@ -28,8 +30,11 @@ public class DatagramHandler {
 	private int[] idata;
 	private float[] fdata;
 	
+	private InetAddress remote;
+	
 	DatagramHandler(Client client, TrafficManager manager, Console console, String ip, int port, int length) {
 		
+		this.port = port;
 		this.client = client;
 		this.manager = manager;
 		this.console = console;
@@ -37,7 +42,8 @@ public class DatagramHandler {
 		this.receive_buffer = new byte[BYTE_SIZE*length+1];
 		
 		try {
-			socket = new DatagramSocket(port, Inet4Address.getByName(ip));
+			remote = Inet4Address.getByName(ip);
+			socket = new DatagramSocket();
 			receiving_packet = new DatagramPacket(receive_buffer, receive_buffer.length);
 			startListener();
 			started = true;
@@ -55,7 +61,7 @@ public class DatagramHandler {
 			public void run() {
 				try {
 					while (true) {
-						socket.receive(send_packet);
+						socket.receive(receiving_packet);
 						receive_buffer = receiving_packet.getData();
 						receive();
 					}
@@ -93,7 +99,7 @@ public class DatagramHandler {
 		if (started) {
 			if (length==buffer.length) {
 				try {
-					send_packet = new DatagramPacket(generateIntPacket(buffer), BYTE_SIZE*length+1, socket.getRemoteSocketAddress());
+					send_packet = new DatagramPacket(generateIntPacket(buffer), BYTE_SIZE*length+1, remote, port);
 					socket.send(send_packet);
 				} catch (IOException e) {
 					console.warn("Stream broke down!");
@@ -109,10 +115,10 @@ public class DatagramHandler {
 	
 	private byte[] generateIntPacket(int[] data) {
 		byte[] buffer = new byte[(BYTE_SIZE*length)+1];
-		int n = 1;
+		int n = 0;
 		buffer[0] = INTEGER_PACKET;
 		for (int i : data) {
-			convertInt(buffer, n++*BYTE_SIZE, i);
+			convertInt(buffer, n++*BYTE_SIZE+1, i);
 		}
 		return buffer;
 	}

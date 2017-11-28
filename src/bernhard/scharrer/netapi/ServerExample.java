@@ -13,7 +13,7 @@ public class ServerExample {
 		
 		final Console console = new WindowsConsole(false);
 		
-		NetAPI.start(true, new WindowsConsole(true), "localhost", 7777, 50, new TrafficManager() {
+		NetAPI.start(true, new WindowsConsole(true), "localhost", 7777, 1, new TrafficManager() {
 			
 			@Override
 			public void receive(Client client, Packet packet) {
@@ -34,6 +34,15 @@ public class ServerExample {
 			@Override
 			public void connect(Client client) {
 				console.info("Client connected: " + client.getIP());
+				client.send("Hallo");
+				while (true) {
+					try {
+						Thread.sleep(100);
+						client.send(new int[] {1});
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 
 			@Override
