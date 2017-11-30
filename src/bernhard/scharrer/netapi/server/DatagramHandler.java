@@ -101,6 +101,7 @@ public class DatagramHandler {
 				try {
 					send_packet = new DatagramPacket(generateIntPacket(buffer), BYTE_SIZE*length+1, remote, port);
 					socket.send(send_packet);
+					System.out.println("sended packet");
 				} catch (IOException e) {
 					console.warn("Stream broke down!");
 					cleanUp();

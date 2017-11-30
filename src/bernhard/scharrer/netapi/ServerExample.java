@@ -38,6 +38,7 @@ public class ServerExample {
 				while (true) {
 					try {
 						Thread.sleep(100);
+						client.send("Hallo");
 						client.send(new int[] {1});
 					} catch (InterruptedException e) {
 						e.printStackTrace();
@@ -54,6 +55,7 @@ public class ServerExample {
 			public void receive(Client client, float[] data) {
 				
 			}
+			
 		});
 	}
 	
