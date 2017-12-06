@@ -6,18 +6,27 @@ import bernhard.scharrer.netapi.packet.Packet;
 
 public class Client {
 	
-	private Channel channel;
+	private TCPChannel channel;
+	private UDPChannel uchannel;
+	
 	private Console console;
 	private String ip;
-	private TCPModul manager;
+	private int port;
+	private int uport;
+	private int buffer;
+	private TrafficManager manager;
+	
 	private int uuid;
 	private static int count_uuid = 0;
 	
-	Client(TCPModul manager, Socket socket, Console console, int buffer_length) {
+	Client(TrafficManager manager, Socket socket, Console console, int uport, int buffer) {
 		
 		this.manager = manager;
 		this.ip = socket.getInetAddress().getHostAddress();
-		this.channel = new Channel(this, manager, socket, console);
+		this.port = socket.getPort();
+		this.uport = uport;
+		this.buffer = buffer;
+		this.channel = new TCPChannel(this, manager, socket, console);
 		this.console = console;
 		this.uuid = count_uuid++;
 		
@@ -25,22 +34,32 @@ public class Client {
 		
 	}
 	
+	void bindUDP() {
+		if (uport != -1) {
+			this.uchannel = new UDPChannel(this, manager, console, ip, uport, buffer);
+			send("\r\r\r;"+uport+";"+buffer+";"+uuid);
+		} else {
+			send("\r\r\r;-1");
+		}
+	}
+	
 	void cleanUp() {
 		manager.disconnect(this);
 		console.debug("Cleaning up client.");
-		channel.cleanUp();
+		if (channel!=null) channel.cleanUp();
+		if (uchannel!=null) uchannel.cleanUp();
 	}
 	
 	public void send(String message) {
-		channel.send(message);
+		if (channel!=null) channel.send(message);
 	}
 	
 	public void send(Packet packet) {
-		channel.send(packet);
+		if (channel!=null) channel.send(packet);
 	}
 	
 	public void send(int[] data) {
-		// TODO
+		if (uchannel!= null) uchannel.send(data);
 	}
 	
 	public void send(float[] data) {
@@ -51,6 +70,10 @@ public class Client {
 		return ip;
 	}
 	
+	public int getPort() {
+		return port;
+	}
+
 	public int getUUID() {
 		return uuid;
 	}

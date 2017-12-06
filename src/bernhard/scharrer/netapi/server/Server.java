@@ -14,20 +14,23 @@ public class Server {
 	private Thread server;
 	private String ip;
 	private int port;
-	private TCPModul traffic;
+	private int uport;
+	private int buffer;
+	private TrafficManager traffic;
 	private Console console;
 	
 	private ServerSocket socket;
 	private List<Client> clients;
 	
-	private int buffer_length;
-
-	public Server(String ip, int port, TCPModul tcpmodul, Console console) {
+	Server(String ip, int port, int uport, int buffer, TrafficManager traffic, Console console) {
 		
 		this.ip = ip;
 		this.port = port;
-		this.traffic = tcpmodul;
+		this.uport = uport;
+		this.buffer = buffer;
+		this.traffic = traffic;
 		this.console = console;
+		
 		this.clients = new ArrayList<>();
 		
 		server = new Thread(new Runnable() {
@@ -38,6 +41,8 @@ public class Server {
 		});
 		
 		server.start();
+		
+		printHeadline();
 		
 	}
 	
@@ -75,7 +80,7 @@ public class Server {
 			
 		} catch (UnknownHostException e) {
 			console.error("Unknown host!");
-		} catch (IOException e1) {
+		} catch (IOException e) {
 			console.error("Could not setup socket listener!");
 		} finally {
 			cleanUp();
@@ -87,7 +92,7 @@ public class Server {
 	 * @param new_socket
 	 */
 	private void newSocket(Socket socket) {
-		clients.add(new Client(traffic, socket, console, buffer_length));
+		clients.add(new Client(traffic, socket, console, uport, buffer));
 	}
 
 	/**
@@ -128,7 +133,6 @@ public class Server {
 		return ip;
 	}
 
-
 	public int getPort() {
 		return port;
 	}
@@ -136,11 +140,16 @@ public class Server {
 	public Console getConsole() {
 		return console;
 	}
-
-	public int getBufferLength() {
-		return buffer_length;
+	
+	private static void printHeadline() {
+		System.out.println("\n ____  _____        _        _       _______  _____  ");
+		System.out.println("|_   \\|_   _|      / |_     / \\     |_   __ \\|_   _| ");
+		System.out.println("  |   \\ | |  .---.`| |-'   / _ \\      | |__) | | |   ");
+		System.out.println("  | |\\ \\| | / /__\\\\| |    / ___ \\     |  ___/  | |   ");
+		System.out.println(" _| |_\\   |_| \\__.,| |, _/ /   \\ \\_  _| |_    _| |_  ");
+		System.out.println("|_____|\\____|'.__.'\\__/|____| |____||_____|  |_____| ");
+		System.out.println("");
+		System.out.println("Written by Bernhard Scharrer\n");
 	}
-	
-	
 	
 }

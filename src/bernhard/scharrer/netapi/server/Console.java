@@ -7,7 +7,7 @@ public abstract class Console {
 	/**
 	 * @param should console debug?
 	 */
-	public Console(boolean debug) {
+	public void setDebugging(boolean debug) {
 		this.debug = debug;
 	}
 	

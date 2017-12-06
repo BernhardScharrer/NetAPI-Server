@@ -1,14 +1,10 @@
 package bernhard.scharrer.netapi.server;
 
-public class DefaultConsole extends Console {
-	
-	public DefaultConsole(boolean debug) {
-		super(debug);
-	}
+public class RawConsole extends Console {
 
 	@Override
 	public void debug(String debug) {
-		System.out.println("[DEBUG] "+debug);
+		if (super.isDebugging()) System.out.println("[DEBUG] "+debug);
 	}
 
 	@Override

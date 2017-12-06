@@ -2,10 +2,6 @@ package bernhard.scharrer.netapi.server;
 
 public class WindowsConsole extends Console {
 
-	public WindowsConsole(boolean debug) {
-		super(debug);
-	}
-
 	@Override
 	public void debug(String debug) {
 		if (super.isDebugging()) System.out.println("[DEBUG] "+debug);

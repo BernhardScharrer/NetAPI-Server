@@ -8,10 +8,10 @@ import java.net.Socket;
 import bernhard.scharrer.netapi.packet.Message;
 import bernhard.scharrer.netapi.packet.Packet;
 
-class Channel {
+class TCPChannel {
 
 	private Client client;
-	private TCPModul manager;
+	private TrafficManager manager;
 	
 	private ObjectInputStream in;
 	private ObjectOutputStream out;
@@ -19,7 +19,7 @@ class Channel {
 	private Thread receiver;
 	private Console console;
 	
-	public Channel(Client client, TCPModul manager, Socket socket, Console console) {
+	public TCPChannel(Client client, TrafficManager manager, Socket socket, Console console) {
 		
 		this.client = client;
 		this.manager = manager;
@@ -94,7 +94,11 @@ class Channel {
 							if (packet instanceof Message) {
 								msg = (String) packet.getEntry("MSG");
 								console.debug("Incoming message: "+msg);
-								manager.receive(client, msg);
+								if (msg.startsWith("\r\r\r")) {
+									client.bindUDP();
+								} else {
+									manager.receive(client, msg);
+								}
 								msg = null;
 							} else {
 								console.debug("Incoming packet: "+packet.getName());

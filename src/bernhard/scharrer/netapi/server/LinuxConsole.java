@@ -15,13 +15,9 @@ public class LinuxConsole extends Console {
 	
 	protected static final String API = RESET+"[NetAPI]" + RESET + " ";
 
-	public LinuxConsole(boolean debug) {
-		super(debug);
-	}
-	
 	@Override
 	public void debug(String debug) {
-		if (super.isDebugging()) System.out.println(DEBUG+debug);
+		System.out.println(DEBUG+debug);
 	}
 
 	@Override
