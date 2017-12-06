@@ -1,4 +1,4 @@
-package utils;
+package bernhard.scharrer.netapi.packet;
 
 import java.io.Serializable;
 import java.util.HashMap;
