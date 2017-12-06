@@ -2,7 +2,7 @@ package bernhard.scharrer.netapi.server;
 
 import bernhard.scharrer.netapi.packet.Packet;
 
-public interface TrafficManager {
+public interface TCPModul {
 	
 	public void connect(Client client);
 	public void disconnect(Client client);

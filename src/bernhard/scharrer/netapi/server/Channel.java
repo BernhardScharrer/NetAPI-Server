@@ -11,7 +11,7 @@ import bernhard.scharrer.netapi.packet.Packet;
 class Channel {
 
 	private Client client;
-	private TrafficManager manager;
+	private TCPModul manager;
 	
 	private ObjectInputStream in;
 	private ObjectOutputStream out;
@@ -19,7 +19,7 @@ class Channel {
 	private Thread receiver;
 	private Console console;
 	
-	public Channel(Client client, TrafficManager manager, Socket socket, Console console) {
+	public Channel(Client client, TCPModul manager, Socket socket, Console console) {
 		
 		this.client = client;
 		this.manager = manager;

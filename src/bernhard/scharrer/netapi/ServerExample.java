@@ -4,7 +4,7 @@ import bernhard.scharrer.netapi.packet.Packet;
 import bernhard.scharrer.netapi.server.Client;
 import bernhard.scharrer.netapi.server.Console;
 import bernhard.scharrer.netapi.server.NetAPI;
-import bernhard.scharrer.netapi.server.TrafficManager;
+import bernhard.scharrer.netapi.server.TCPModul;
 import bernhard.scharrer.netapi.server.WindowsConsole;
 
 public class ServerExample {
@@ -13,7 +13,7 @@ public class ServerExample {
 		
 		final Console console = new WindowsConsole(false);
 		
-		NetAPI.start(true, new WindowsConsole(true), "localhost", 7777, 1, new TrafficManager() {
+		NetAPI.start(true, new WindowsConsole(true), "localhost", 7777, 1, new TCPModul() {
 			
 			@Override
 			public void receive(Client client, Packet packet) {
@@ -38,7 +38,6 @@ public class ServerExample {
 				while (true) {
 					try {
 						Thread.sleep(100);
-						client.send("Hallo");
 						client.send(new int[] {1});
 					} catch (InterruptedException e) {
 						e.printStackTrace();
@@ -48,7 +47,7 @@ public class ServerExample {
 
 			@Override
 			public void receive(Client client, int[] data) {
-				
+				System.out.println("Getting data...");
 			}
 
 			@Override

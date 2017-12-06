@@ -24,7 +24,7 @@ public class DatagramHandler {
 	private boolean started = false;
 	private Thread listener;
 	private Console console;
-	private TrafficManager manager;
+	private TCPModul manager;
 	private Client client;
 	
 	private int[] idata;
@@ -32,7 +32,7 @@ public class DatagramHandler {
 	
 	private InetAddress remote;
 	
-	DatagramHandler(Client client, TrafficManager manager, Console console, String ip, int port, int length) {
+	DatagramHandler(Client client, TCPModul manager, Console console, String ip, int port, int length) {
 		
 		this.port = port;
 		this.client = client;
@@ -101,7 +101,6 @@ public class DatagramHandler {
 				try {
 					send_packet = new DatagramPacket(generateIntPacket(buffer), BYTE_SIZE*length+1, remote, port);
 					socket.send(send_packet);
-					System.out.println("sended packet");
 				} catch (IOException e) {
 					console.warn("Stream broke down!");
 					cleanUp();

@@ -14,7 +14,7 @@ public class Server {
 	private Thread server;
 	private String ip;
 	private int port;
-	private TrafficManager traffic;
+	private TCPModul traffic;
 	private Console console;
 	
 	private ServerSocket socket;
@@ -22,13 +22,12 @@ public class Server {
 	
 	private int buffer_length;
 
-	public Server(String ip, int port, int buffer_length, TrafficManager traffic, Console console) {
+	public Server(String ip, int port, TCPModul tcpmodul, Console console) {
 		
 		this.ip = ip;
 		this.port = port;
-		this.traffic = traffic;
+		this.traffic = tcpmodul;
 		this.console = console;
-		this.buffer_length = buffer_length;
 		this.clients = new ArrayList<>();
 		
 		server = new Thread(new Runnable() {
