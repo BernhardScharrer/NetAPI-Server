@@ -10,58 +10,66 @@ import java.net.UnknownHostException;
 
 public class UDPChannel {
 
-	private final int INTEGER_PACKET = 0;
-	private final int FLOAT_PACKET = 1;
-	private final int BYTE_SIZE = 4;
+	private static final int INTEGER_PACKET = 0;
+	private static final int FLOAT_PACKET = 1;
+	private static final int BYTE_SIZE = 4;
+	private static final int MAX_CLIENTS = 100;
 	
-	private String ip;
-	private int uport;
-	private int buffer;
+	private static UDPChannel[] clients = new UDPChannel[MAX_CLIENTS];
+	private static byte[] receive_buffer;
 	
-	private byte[] receive_buffer;
-	
-	private DatagramSocket socket_receiving;
-	private DatagramSocket socket_sending;
-	private DatagramPacket receiving_packet;
-	private DatagramPacket send_packet;
-	private boolean started = false;
-	private Thread listener;
-	private Console console;
-	private TrafficManager manager;
 	private Client client;
+	
+	private InetAddress client_address;
+	private static int uport;
+	private static int buffer;
 	
 	private int[] idata;
 	private float[] fdata;
 	
-	private InetAddress client_address;
+	private static Console console;
+	private static TrafficManager manager;
+	private static DatagramSocket socket_receiving;
+	private static DatagramSocket socket_sending;
+	private static DatagramPacket receiving_packet;
+	private static DatagramPacket send_packet;
 	
-	UDPChannel(Client client, TrafficManager manager, Console console, String ip, int uport, int buffer) {
+	private static boolean started = false;
+	private static Thread listener;
+	
+	public static void setup(TrafficManager manager, Console console, int uport, int buffer) {
 		
-		this.client = client;
-		this.manager = manager;
-		
-		this.ip = ip;
-		this.uport = uport;
-		this.console = console;
-		this.buffer = buffer;
-		this.receive_buffer = new byte[BYTE_SIZE*buffer+1];
+		UDPChannel.manager = manager;
+		UDPChannel.uport = uport;
+		UDPChannel.console = console;
+		UDPChannel.buffer = buffer;
+		UDPChannel.receive_buffer = new byte[BYTE_SIZE*buffer+1];
+		UDPChannel.receiving_packet = new DatagramPacket(receive_buffer, receive_buffer.length);
 		
 		try {
-			client_address = Inet4Address.getByName(ip);
 			socket_receiving = new DatagramSocket(uport);
 			socket_sending = new DatagramSocket();
-			receiving_packet = new DatagramPacket(receive_buffer, receive_buffer.length);
 			startListener();
 			started = true;
 		} catch (SocketException e) {
 			e.printStackTrace();
+		}
+		
+	}
+	
+	UDPChannel(Client client) {
+		
+		this.client = client;
+		clients[client.getUUID()] = this;
+		try {
+			client_address = Inet4Address.getByName(client.getIP());
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
 		
 	}
 	
-	private void startListener() {
+	private static void startListener() {
 		listener = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -70,7 +78,7 @@ public class UDPChannel {
 						socket_receiving.receive(receiving_packet);
 						System.out.println("Right here");
 						receive_buffer = receiving_packet.getData();
-						receive();
+						receive(null);
 					}
 				} catch (IOException e) {
 					console.warn("Stream broke down!");
@@ -82,21 +90,21 @@ public class UDPChannel {
 		listener.start();
 	}
 	
-	private synchronized void receive() {
+	private synchronized static void receive(UDPChannel channel) {
 		
 		if (receive_buffer[0]==INTEGER_PACKET) {
 			
-			idata = new int[buffer];
-			for (int i = 0;i<idata.length;i++) {
-				idata[i] = converToInt(receive_buffer, 1+i*BYTE_SIZE);
+			channel.idata = new int[buffer];
+			for (int i = 0;i<channel.idata.length;i++) {
+				channel.idata[i] = channel.converToInt(receive_buffer, 1+i*BYTE_SIZE);
 			}
-			manager.receive(client, idata);
+			manager.receive(channel.client, channel.idata);
 			
 		} else if (receive_buffer[0]==FLOAT_PACKET) {
 			
-			fdata = new float[buffer];
+			channel.fdata = new float[buffer];
 			// TODO generate float array
-			manager.receive(client, fdata);
+			manager.receive(channel.client, channel.fdata);
 			
 		}
 		
@@ -161,7 +169,7 @@ public class UDPChannel {
 //	    return ByteBuffer.wrap(bytes).getFloat();
 //	}
 	
-	void cleanUp() {
+	static void cleanUp() {
 		
 		started = false;
 		

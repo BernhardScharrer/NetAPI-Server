@@ -40,6 +40,10 @@ public class Server {
 			}
 		});
 		
+		if (uport != -1) {
+			UDPChannel.setup(traffic, console, uport, buffer);
+		}
+		
 		server.start();
 		
 		printHeadline();

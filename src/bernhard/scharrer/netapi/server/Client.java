@@ -36,7 +36,9 @@ public class Client {
 	
 	void bindUDP() {
 		if (uport != -1) {
-			this.uchannel = new UDPChannel(this, manager, console, ip, uport, buffer);
+			if (uchannel!=null) {
+				uchannel = new UDPChannel(this);
+			}
 			send("\r\r\r;"+uport+";"+buffer+";"+uuid);
 		} else {
 			send("\r\r\r;-1");

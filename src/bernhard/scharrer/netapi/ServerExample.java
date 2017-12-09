@@ -36,14 +36,6 @@ public class ServerExample {
 			public void connect(Client client) {
 				console.info("Client connected: " + client.getIP());
 				client.send("Hallo");
-				while (true) {
-					try {
-						Thread.sleep(500);
-						client.send(new int[] {1,1,1});
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
 			}
 
 			@Override
