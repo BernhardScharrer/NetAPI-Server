@@ -13,6 +13,7 @@ public class UDPChannel {
 	private static final int INTEGER_PACKET = 0;
 	private static final int FLOAT_PACKET = 1;
 	private static final int BYTE_SIZE = 4;
+	private static final int OFFSET = 4;
 	private static final int MAX_CLIENTS = 100;
 	
 	private static UDPChannel[] clients = new UDPChannel[MAX_CLIENTS];
@@ -29,9 +30,8 @@ public class UDPChannel {
 	
 	private static Console console;
 	private static TrafficManager manager;
-	private static DatagramSocket socket_receiving;
-	private static DatagramSocket socket_sending;
-	private static DatagramPacket receiving_packet;
+	private static DatagramSocket socket;
+	private static DatagramPacket receive_packet;
 	private static DatagramPacket send_packet;
 	
 	private static boolean started = false;
@@ -44,11 +44,10 @@ public class UDPChannel {
 		UDPChannel.console = console;
 		UDPChannel.buffer = buffer;
 		UDPChannel.receive_buffer = new byte[BYTE_SIZE*buffer+1];
-		UDPChannel.receiving_packet = new DatagramPacket(receive_buffer, receive_buffer.length);
+		UDPChannel.receive_packet = new DatagramPacket(receive_buffer, receive_buffer.length);
 		
 		try {
-			socket_receiving = new DatagramSocket(uport);
-			socket_sending = new DatagramSocket();
+			socket = new DatagramSocket(uport);
 			startListener();
 			started = true;
 		} catch (SocketException e) {
@@ -75,10 +74,13 @@ public class UDPChannel {
 			public void run() {
 				try {
 					while (true) {
-						socket_receiving.receive(receiving_packet);
-						System.out.println("Right here");
-						receive_buffer = receiving_packet.getData();
-						receive(null);
+						socket.receive(receive_packet);
+						System.out.println("Right here: "+receive_packet.getAddress().getHostAddress());
+						receive_buffer = receive_packet.getData();
+						send_packet = new DatagramPacket(receive_buffer, buffer, receive_packet.getSocketAddress());
+						socket.send(send_packet);
+						//TODO
+//						receive(null);
 					}
 				} catch (IOException e) {
 					console.warn("Stream broke down!");
@@ -117,7 +119,7 @@ public class UDPChannel {
 				try {
 					send_packet = new DatagramPacket(generateIntDatagram(data), BYTE_SIZE*buffer+1, client_address, uport);
 					System.out.println("Sending packet!");
-					socket_sending.send(send_packet);
+					socket.send(send_packet);
 					System.out.println("Sended!");
 				} catch (IOException e) {
 					console.warn("Stream broke down!");
@@ -177,12 +179,12 @@ public class UDPChannel {
 			listener.interrupt();
 		}
 		
-		if (socket_receiving!= null&&!socket_receiving.isClosed()) {
-			socket_receiving.close();
+		if (socket!= null&&!socket.isClosed()) {
+			socket.close();
 		}
 		
 		send_packet = null;
-		receiving_packet = null;
+		receive_packet = null;
 		
 	}
 	
