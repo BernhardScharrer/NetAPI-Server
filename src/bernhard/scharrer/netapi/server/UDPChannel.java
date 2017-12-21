@@ -3,10 +3,8 @@ package bernhard.scharrer.netapi.server;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.Inet4Address;
-import java.net.InetAddress;
+import java.net.SocketAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 
 public class UDPChannel {
 
@@ -21,12 +19,12 @@ public class UDPChannel {
 	
 	private Client client;
 	
-	private InetAddress client_address;
-	private static int uport;
 	private static int buffer;
 	
 	private int[] idata;
 	private float[] fdata;
+	
+	private SocketAddress host;
 	
 	private static Console console;
 	private static TrafficManager manager;
@@ -40,10 +38,9 @@ public class UDPChannel {
 	public static void setup(TrafficManager manager, Console console, int uport, int buffer) {
 		
 		UDPChannel.manager = manager;
-		UDPChannel.uport = uport;
 		UDPChannel.console = console;
 		UDPChannel.buffer = buffer;
-		UDPChannel.receive_buffer = new byte[BYTE_SIZE*buffer+1];
+		UDPChannel.receive_buffer = new byte[BYTE_SIZE*buffer+OFFSET];
 		UDPChannel.receive_packet = new DatagramPacket(receive_buffer, receive_buffer.length);
 		
 		try {
@@ -59,12 +56,7 @@ public class UDPChannel {
 	UDPChannel(Client client) {
 		
 		this.client = client;
-		clients[client.getUUID()] = this;
-		try {
-			client_address = Inet4Address.getByName(client.getIP());
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
+		clients[client.getCUID()] = this;
 		
 	}
 	
@@ -75,10 +67,11 @@ public class UDPChannel {
 				try {
 					while (true) {
 						socket.receive(receive_packet);
-						System.out.println("Right here: "+receive_packet.getAddress().getHostAddress());
 						receive_buffer = receive_packet.getData();
-						send_packet = new DatagramPacket(receive_buffer, buffer, receive_packet.getSocketAddress());
-						socket.send(send_packet);
+						receive();
+						
+//						send_packet = new DatagramPacket(receive_buffer, buffer, receive_packet.getSocketAddress());
+//						socket.send(send_packet);
 						//TODO
 //						receive(null);
 					}
@@ -92,35 +85,47 @@ public class UDPChannel {
 		listener.start();
 	}
 	
-	private synchronized static void receive(UDPChannel channel) {
+	private void setHost(SocketAddress host) {
+		this.host = host;
+	}
+
+	private synchronized static void receive() {
 		
-		if (receive_buffer[0]==INTEGER_PACKET) {
+		int cuid = receive_buffer[1];
+		UDPChannel channel = clients[cuid];
+		
+		if (channel != null) {
+			channel.setHost(receive_packet.getSocketAddress());
 			
-			channel.idata = new int[buffer];
-			for (int i = 0;i<channel.idata.length;i++) {
-				channel.idata[i] = channel.converToInt(receive_buffer, 1+i*BYTE_SIZE);
+			if (receive_buffer[0]==INTEGER_PACKET) {
+				
+				channel.idata = new int[buffer];
+				for (int i = 0;i<channel.idata.length;i++) {
+					channel.idata[i] = channel.converToInt(receive_buffer, OFFSET+i*BYTE_SIZE);
+				}
+				manager.receive(channel.client, channel.idata);
+				
+			} else if (receive_buffer[0]==FLOAT_PACKET) {
+				
+				channel.fdata = new float[buffer];
+				// TODO generate float array
+				manager.receive(channel.client, channel.fdata);
+				
 			}
-			manager.receive(channel.client, channel.idata);
+		} else {
 			
-		} else if (receive_buffer[0]==FLOAT_PACKET) {
-			
-			channel.fdata = new float[buffer];
-			// TODO generate float array
-			manager.receive(channel.client, channel.fdata);
+			console.error("Packet from unknown client! (" + receive_packet.getAddress().getHostAddress()+")");
 			
 		}
 		
 	}
 
 	void send(int[] data) {
-		System.out.println("Trying to send");
 		if (started) {
 			if (buffer==data.length) {
 				try {
-					send_packet = new DatagramPacket(generateIntDatagram(data), BYTE_SIZE*buffer+1, client_address, uport);
-					System.out.println("Sending packet!");
+					send_packet = new DatagramPacket(generateIntDatagram(data), BYTE_SIZE*buffer+1, host);
 					socket.send(send_packet);
-					System.out.println("Sended!");
 				} catch (IOException e) {
 					console.warn("Stream broke down!");
 					cleanUp();
@@ -134,11 +139,11 @@ public class UDPChannel {
 	}
 	
 	private byte[] generateIntDatagram(int[] data) {
-		byte[] datagram = new byte[(BYTE_SIZE*buffer)+1];
+		byte[] datagram = new byte[(BYTE_SIZE*buffer)+OFFSET];
 		int n = 0;
 		datagram[0] = INTEGER_PACKET;
 		for (int i : data) {
-			convertInt(datagram, n++*BYTE_SIZE+1, i);
+			convertInt(datagram, n++*BYTE_SIZE+OFFSET, i);
 		}
 		return datagram;
 	}
@@ -171,6 +176,20 @@ public class UDPChannel {
 //	    return ByteBuffer.wrap(bytes).getFloat();
 //	}
 	
+	static synchronized int getFreeSlot() {
+		for (int slot=0;slot<MAX_CLIENTS;slot++) {
+			if (clients[slot] == null || !clients[slot].getClient().isConnected()) {
+				clients[slot] = null;
+				return slot;
+			}
+		}
+		return -1;
+	}
+	
+	private Client getClient() {
+		return client;
+	}
+
 	static void cleanUp() {
 		
 		started = false;

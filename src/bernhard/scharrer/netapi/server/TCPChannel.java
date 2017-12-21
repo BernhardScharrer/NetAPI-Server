@@ -93,7 +93,7 @@ class TCPChannel {
 							packet = (Packet) obj;
 							if (packet instanceof Message) {
 								msg = (String) packet.getEntry("MSG");
-								console.debug("Incoming message: "+msg);
+							 	console.debug("Incoming message: "+msg);
 								if (msg.startsWith("\r\r\r")) {
 									client.bindUDP();
 								} else {

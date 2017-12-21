@@ -17,6 +17,8 @@ public class Client {
 	private TrafficManager manager;
 	
 	private int uuid;
+	private boolean connected;
+	private int cuid;
 	private static int count_uuid = 0;
 	
 	Client(TrafficManager manager, Socket socket, Console console, int uport, int buffer) {
@@ -30,26 +32,37 @@ public class Client {
 		this.console = console;
 		this.uuid = count_uuid++;
 		
+		connected = true;
 		manager.connect(this);
 		
 	}
 	
 	void bindUDP() {
+		
+		this.cuid = UDPChannel.getFreeSlot();
+		
 		if (uport != -1) {
-			if (uchannel!=null) {
+			if (uchannel==null) {
 				uchannel = new UDPChannel(this);
+				send("\r\r\r;"+uport+";"+buffer+";"+cuid);
+			} else {
+				console.warn("UDP modul  has already been bound to this client!");
 			}
-			send("\r\r\r;"+uport+";"+buffer+";"+uuid);
 		} else {
 			send("\r\r\r;-1");
 		}
 	}
 	
+	int getCUID() {
+		return cuid;
+	}
+	
 	void cleanUp() {
+		connected = false;
 		manager.disconnect(this);
 		console.debug("Cleaning up client.");
 		if (channel!=null) channel.cleanUp();
-		if (uchannel!=null) uchannel.cleanUp();
+		if (uchannel!=null) UDPChannel.cleanUp();
 	}
 	
 	public void send(String message) {
@@ -78,6 +91,10 @@ public class Client {
 
 	public int getUUID() {
 		return uuid;
+	}
+
+	public boolean isConnected() {
+		return connected;
 	}
 	
 }

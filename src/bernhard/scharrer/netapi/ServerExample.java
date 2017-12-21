@@ -14,7 +14,7 @@ public class ServerExample {
 		
 		final Console console = new WindowsConsole();
 		
-		Server server = NetAPI.start("4ahel.at", 7788, 7789, 3, new TrafficManager() {
+		Server server = NetAPI.start("4ahel.at", 7788, 7789, 1, new TrafficManager() {
 			
 			@Override
 			public void receive(Client client, Packet packet) {
@@ -35,13 +35,11 @@ public class ServerExample {
 			@Override
 			public void connect(Client client) {
 				console.info("Client connected: " + client.getIP());
-				client.send("Hallo");
 			}
 
 			@Override
 			public void receive(Client client, int[] data) {
-				System.out.println("Getting data...");
-				client.send(data);
+				client.send(new int[] {data[0]++});
 			}
 
 			@Override
