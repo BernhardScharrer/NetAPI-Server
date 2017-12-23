@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
 
 public class UDPChannel {
 
@@ -55,6 +56,7 @@ public class UDPChannel {
 	
 	UDPChannel(Client client) {
 		
+		System.out.println("Binding new client: "+this.client.getIP());
 		this.client = client;
 		clients[client.getCUID()] = this;
 		
@@ -69,11 +71,6 @@ public class UDPChannel {
 						socket.receive(receive_packet);
 						receive_buffer = receive_packet.getData();
 						receive();
-						
-//						send_packet = new DatagramPacket(receive_buffer, buffer, receive_packet.getSocketAddress());
-//						socket.send(send_packet);
-						//TODO
-//						receive(null);
 					}
 				} catch (IOException e) {
 					console.warn("Stream broke down!");
@@ -101,14 +98,16 @@ public class UDPChannel {
 				
 				channel.idata = new int[buffer];
 				for (int i = 0;i<channel.idata.length;i++) {
-					channel.idata[i] = channel.converToInt(receive_buffer, OFFSET+i*BYTE_SIZE);
+					channel.idata[i] = channel.convertToInt(receive_buffer, OFFSET+i*BYTE_SIZE);
 				}
 				manager.receive(channel.client, channel.idata);
 				
 			} else if (receive_buffer[0]==FLOAT_PACKET) {
 				
 				channel.fdata = new float[buffer];
-				// TODO generate float array
+				for (int f = 0;f<channel.fdata.length;f++) {
+					channel.fdata[f] = channel.convertToFloat(receive_buffer, OFFSET+f*BYTE_SIZE);
+				}
 				manager.receive(channel.client, channel.fdata);
 				
 			}
@@ -124,7 +123,25 @@ public class UDPChannel {
 		if (started) {
 			if (buffer==data.length) {
 				try {
-					send_packet = new DatagramPacket(generateIntDatagram(data), BYTE_SIZE*buffer+1, host);
+					send_packet = new DatagramPacket(generateIntDatagram(data), BYTE_SIZE*buffer+OFFSET, host);
+					socket.send(send_packet);
+				} catch (IOException e) {
+					console.warn("Stream broke down!");
+					cleanUp();
+				}
+			} else {
+				console.warn("Can't send datagram! (length does not match to: "+buffer+")");
+			}
+		} else {
+			console.error("Can't send datagrams before binding socket!");
+		}
+	}
+	
+	void send(float[] data) {
+		if (started) {
+			if (buffer==data.length) {
+				try {
+					send_packet = new DatagramPacket(generateFloatDatagram(data), BYTE_SIZE*buffer+OFFSET, host);
 					socket.send(send_packet);
 				} catch (IOException e) {
 					console.warn("Stream broke down!");
@@ -148,9 +165,15 @@ public class UDPChannel {
 		return datagram;
 	}
 	
-//	private void generateFloatPacket(float[] data) {
-//		
-//	}
+	private byte[] generateFloatDatagram(float[] data) {
+		byte[] datagram = new byte[(BYTE_SIZE*buffer)+OFFSET];
+		int n = 0;
+		datagram[0] = FLOAT_PACKET;
+		for (float f : data) {
+			convertFloat(datagram, n++*BYTE_SIZE+OFFSET, f);
+		}
+		return datagram;
+	}
 	
 	private void convertInt(byte[] buffer, int start, int value) {
 		buffer[start] = (byte) (value >>> 24);
@@ -159,22 +182,20 @@ public class UDPChannel {
 		buffer[start+3] = (byte) (value);
 	}
 
-	private int converToInt(byte[] buffer, int start) {
+	private int convertToInt(byte[] buffer, int start) {
 		return (buffer[start+3] < 0 ? buffer[start+3] + 256 : buffer[start+3])
 				+ ((buffer[start+2] < 0 ? buffer[start+2] + 256 : buffer[start+2]) << 8)
 				+ ((buffer[start+1] < 0 ? buffer[start+1] + 256 : buffer[start+1]) << 16)
 				+ ((buffer[start] < 0 ? buffer[start] + 256 : buffer[start]) << 24);
 	}
-//
-//	private byte[] convertFloat(float value) {
-//	    byte[] bytes = new byte[4];
-//	    ByteBuffer.wrap(bytes).putFloat(value);
-//	    return bytes;
-//	}
-//
-//	private float convertToFloat(byte[] bytes) {
-//	    return ByteBuffer.wrap(bytes).getFloat();
-//	}
+	
+	private void convertFloat(byte[] buffer, int start, float value) {
+	    ByteBuffer.wrap(buffer, start, OFFSET).putFloat(value);
+	}
+
+	private float convertToFloat(byte[] bytes, int start) {
+	    return ByteBuffer.wrap(bytes,start,OFFSET).getFloat();
+	}
 	
 	static synchronized int getFreeSlot() {
 		for (int slot=0;slot<MAX_CLIENTS;slot++) {

@@ -78,7 +78,7 @@ public class Client {
 	}
 	
 	public void send(float[] data) {
-		// TODO
+		if (uchannel!= null) uchannel.send(data);
 	}
 
 	public String getIP() {

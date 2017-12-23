@@ -10,11 +10,13 @@ import bernhard.scharrer.netapi.server.WindowsConsole;
 
 public class ServerExample {
 	
+	private static int count = 0;
+	
 	public static void main(String[] args) {
 		
 		final Console console = new WindowsConsole();
 		
-		Server server = NetAPI.start("4ahel.at", 7788, 7789, 1, new TrafficManager() {
+		Server server = NetAPI.start("localhost", 7788, 7789, 3, new TrafficManager() {
 			
 			@Override
 			public void receive(Client client, Packet packet) {
@@ -39,12 +41,12 @@ public class ServerExample {
 
 			@Override
 			public void receive(Client client, int[] data) {
-				client.send(new int[] {data[0]++});
+				
 			}
 
 			@Override
 			public void receive(Client client, float[] data) {
-				
+				System.out.println(count++);
 			}
 			
 		}, console);
