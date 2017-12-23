@@ -125,6 +125,11 @@ public class Server {
 		}
 		
 		/*
+		 * stop datagram listener
+		 */
+		UDPChannel.closeListener();
+		
+		/*
 		 * interrupt server thread
 		 */
 		if (server!=null&&server.isAlive()&&!server.isInterrupted()) {

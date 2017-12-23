@@ -56,7 +56,7 @@ public class UDPChannel {
 	
 	UDPChannel(Client client) {
 		
-		System.out.println("Binding new client: "+this.client.getIP());
+		System.out.println("Binding new client: "+client.getIP());
 		this.client = client;
 		clients[client.getCUID()] = this;
 		
@@ -68,13 +68,14 @@ public class UDPChannel {
 			public void run() {
 				try {
 					while (true) {
+						UDPChannel.receive_packet = new DatagramPacket(receive_buffer, receive_buffer.length);
 						socket.receive(receive_packet);
 						receive_buffer = receive_packet.getData();
 						receive();
 					}
 				} catch (IOException e) {
 					console.warn("Stream broke down!");
-					cleanUp();
+					closeListener();
 				}				
 			}
 		});
@@ -211,7 +212,13 @@ public class UDPChannel {
 		return client;
 	}
 
-	static void cleanUp() {
+	void cleanUp() {
+		clients[client.getCUID()] = null;
+	}
+	
+	static void closeListener() {
+		
+		console.debug("Closing datagram listener.");
 		
 		started = false;
 		

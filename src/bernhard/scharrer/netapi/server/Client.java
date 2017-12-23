@@ -62,7 +62,7 @@ public class Client {
 		manager.disconnect(this);
 		console.debug("Cleaning up client.");
 		if (channel!=null) channel.cleanUp();
-		if (uchannel!=null) UDPChannel.cleanUp();
+		if (uchannel!=null) uchannel.cleanUp();
 	}
 	
 	public void send(String message) {
