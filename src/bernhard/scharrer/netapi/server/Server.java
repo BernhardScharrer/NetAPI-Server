@@ -22,6 +22,18 @@ public class Server {
 	private ServerSocket socket;
 	private List<Client> clients;
 	
+	private boolean started;
+	private boolean closed;
+	private boolean headline;
+	
+	/**
+	 * @param ip
+	 * @param port
+	 * @param uport
+	 * @param buffer
+	 * @param traffic
+	 * @param console
+	 */
 	Server(String ip, int port, int uport, int buffer, TrafficManager traffic, Console console) {
 		
 		this.ip = ip;
@@ -30,24 +42,36 @@ public class Server {
 		this.buffer = buffer;
 		this.traffic = traffic;
 		this.console = console;
-		
 		this.clients = new ArrayList<>();
-		
-		server = new Thread(new Runnable() {
+		this.server = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				startListener();
 			}
 		});
 		
-		if (uport != -1) {
-			UDPChannel.setup(traffic, console, uport, buffer);
+	}
+	
+	/**
+	 * 
+	 */
+	public void start() {
+		if (closed) {
+			if (!started) {
+				if (uport != -1) {
+					UDPChannel.setup(traffic, console, uport, buffer);
+				}
+				
+				server.start();
+				
+				if (headline) printHeadline();
+				started = true;
+			} else {
+				console.warn("Server already running!");
+			}
+		} else {
+			console.error("Can't start closed server!");
 		}
-		
-		server.start();
-		
-		printHeadline();
-		
 	}
 	
 	/**
@@ -136,8 +160,32 @@ public class Server {
 			server.interrupt();
 		}
 		
+		closed = true;
+		
 	}
 	
+	/**
+	 * kick specified client.
+	 * 
+	 * @param client
+	 */
+	public void kick(Client client) {
+		client.cleanUp();
+		clients.remove(client);
+	}
+	
+	public boolean isStarted() {
+		return started;
+	}
+
+	public boolean isClosed() {
+		return closed;
+	}
+
+	public void setHeadline(boolean headline) {
+		this.headline = headline;
+	}
+
 	public String getIP() {
 		return ip;
 	}
