@@ -56,7 +56,7 @@ public class Server {
 	 * 
 	 */
 	public void start() {
-		if (closed) {
+		if (!closed) {
 			if (!started) {
 				if (uport != -1) {
 					UDPChannel.setup(traffic, console, uport, buffer);
