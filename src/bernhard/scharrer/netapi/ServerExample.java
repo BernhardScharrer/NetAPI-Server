@@ -16,7 +16,7 @@ public class ServerExample {
 		
 		final Console console = new WindowsConsole();
 		
-		Server server = NetAPI.start("localhost", 7788, 7789, 3, new TrafficManager() {
+		Server server = NetAPI.start("4ahel.at", 7788, 7789, 3, new TrafficManager() {
 			
 			@Override
 			public void receive(Client client, Packet packet) {
@@ -25,8 +25,10 @@ public class ServerExample {
 			
 			@Override
 			public void receive(Client client, String message) {
-				console.info("Incoming msg! ("+message+") echoing it...");
-				client.send(message);
+				if (message.equalsIgnoreCase("now")) {
+					System.out.println(count/10.0f+"%");
+					count = 0;
+				}
 			}
 			
 			@Override
@@ -46,7 +48,7 @@ public class ServerExample {
 
 			@Override
 			public void receive(Client client, float[] data) {
-				System.out.println(count++);
+				count++;
 			}
 			
 		}, console);

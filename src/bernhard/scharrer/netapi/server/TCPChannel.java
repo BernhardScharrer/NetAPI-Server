@@ -32,7 +32,7 @@ class TCPChannel {
 			startReceiver();
 			
 		} catch (IOException e) {
-			console.warn("Could not bind streams to: "+client.getIP());
+			console.error("Could not bind streams to: "+client.getIP());
 		}
 		
 	}
@@ -123,9 +123,13 @@ class TCPChannel {
 		
 		receiver.start();
 	}
+	
+	public boolean isBound() {
+		return (in!=null) && (out != null);
+	}
 
 	public void cleanUp() {
-		receiver.interrupt();
+		if (receiver != null) receiver.interrupt();
 		console.debug("Cleaning up channel.");
 	}
 	

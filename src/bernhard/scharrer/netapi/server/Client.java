@@ -32,8 +32,12 @@ public class Client {
 		this.console = console;
 		this.uuid = count_uuid++;
 		
-		connected = true;
-		manager.connect(this);
+		if (this.channel.isBound()) {
+			connected = true;
+			manager.connect(this);
+		} else {
+			cleanUp();
+		}
 		
 	}
 	
