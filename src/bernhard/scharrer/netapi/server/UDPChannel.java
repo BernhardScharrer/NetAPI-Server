@@ -56,7 +56,7 @@ public class UDPChannel {
 	
 	UDPChannel(Client client) {
 		
-		System.out.println("Binding new client: "+client.getIP());
+		console.debug("Binding new client. (IP: "+client.getIP()+" | CUID: "+client.getCUID()+")");
 		this.client = client;
 		clients[client.getCUID()] = this;
 		
@@ -114,7 +114,7 @@ public class UDPChannel {
 			}
 		} else {
 			
-			console.error("Packet from unknown client! (" + receive_packet.getAddress().getHostAddress()+")");
+			console.debug("Packet from unknown client! (" + receive_packet.getAddress().getHostAddress()+")");
 			
 		}
 		
