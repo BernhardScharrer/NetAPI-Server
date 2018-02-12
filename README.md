@@ -1,12 +1,14 @@
 ## NetAPI - Server
 -----------
 * **FEATURES**
-> - TODO
+> - server-client mode
+> - simple usage to transfer data via TCP or UDP
 
 * **IN PROGRESS**
-> - TODO
+> - README.md
+> - RSA based encryption for tcp streams
 
 * **USAGE**
 >
-> - TODO
+> - coming soon...
 >
