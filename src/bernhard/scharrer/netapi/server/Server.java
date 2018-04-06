@@ -199,7 +199,7 @@ public class Server {
 	}
 	
 	private static void printHeadline() {
-		System.out.println("\n ____  _____        _        _       _______  _____  ");
+		System.out.println(" ____  _____        _        _       _______  _____  ");
 		System.out.println("|_   \\|_   _|      / |_     / \\     |_   __ \\|_   _| ");
 		System.out.println("  |   \\ | |  .---.`| |-'   / _ \\      | |__) | | |   ");
 		System.out.println("  | |\\ \\| | / /__\\\\| |    / ___ \\     |  ___/  | |   ");
