@@ -218,7 +218,9 @@ public class UDPChannel {
 	
 	static void closeListener() {
 		
-		console.debug("Closing datagram listener.");
+		if (console!=null) {
+			console.debug("Closing datagram listener.");
+		}
 		
 		started = false;
 		

@@ -99,7 +99,7 @@ public class Server {
 					newSocket(new_socket);
 					new_socket = null;
 				} catch (IOException e){
-					console.error("Socket listener broke down!");
+					console.error("Socket factory broke down!");
 					cleanUp();
 					break;
 				}
